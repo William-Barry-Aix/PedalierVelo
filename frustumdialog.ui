@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FrustumDialog</class>
+ <widget class="QDialog" name="FrustumDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>326</width>
+    <height>291</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>FrustumDialog</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>260</y>
+     <width>169</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="formLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>30</y>
+     <width>190</width>
+     <height>211</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="formLayout">
+    <property name="labelAlignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_dist_cam">
+      <property name="text">
+       <string>Distance camera</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QDoubleSpinBox" name="box_dist_camera"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLabel" name="label_radius">
+      <property name="text">
+       <string>Radius</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QDoubleSpinBox" name="box_radius"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QDoubleSpinBox" name="box_near"/>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLabel" name="label_near">
+      <property name="text">
+       <string>Near</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QDoubleSpinBox" name="box_far"/>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLabel" name="label_far">
+      <property name="text">
+       <string>Far</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QDoubleSpinBox" name="box_angle"/>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLabel" name="label_angle">
+      <property name="text">
+       <string>Angle</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
