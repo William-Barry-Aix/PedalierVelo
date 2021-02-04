@@ -3,7 +3,7 @@
 #ifndef GLAREA_H
 #define GLAREA_H
 
-#include "cylindre.h"
+#include "roue.h"
 #include <QKeyEvent>
 #include <QTimer>
 #include <QOpenGLWidget>
@@ -24,6 +24,7 @@ public:
     double m_near = 1;
     double m_far = 5;
     double m_angle = 0;
+
 
 public slots:
     void setRadius(double radius);
@@ -59,7 +60,10 @@ private:
     int m_posAttr;
     int m_colAttr;
     int m_matrixUniform;
-    Cylindre *cyl = nullptr;
+    Roue *cyl = nullptr;
+    Roue roue1 = Roue(1, 1, 30, 255, 255, 255);
+    Roue roue2 = Roue(1, 0.5, 15, 255, 255, 255);
+    //Roue  = Roue(1, 0.5, 15, 255, 255, 255);
 };
 
 #endif // GLAREA_H

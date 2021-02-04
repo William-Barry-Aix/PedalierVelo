@@ -22,17 +22,17 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        cylindre.cpp \
         forme.cpp \
         frustumdialog.cpp \
         princ.cpp \
-        glarea.cpp
+        glarea.cpp \
+        roue.cpp
 
 HEADERS  += princ.h \
-        cylindre.h \
         forme.h \
         frustumdialog.h \
-        glarea.h
+        glarea.h \
+        roue.h
 
 FORMS    += princ.ui \
     frustumdialog.ui

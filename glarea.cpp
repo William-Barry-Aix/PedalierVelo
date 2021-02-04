@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QSurfaceFormat>
 #include <QMatrix4x4>
-#include "cylindre.h"
+#include "roue.h"
 #define PI 3.14159265
 
 static const QString vertexShaderFile   = ":/basic.vsh";
@@ -89,25 +89,6 @@ void GLArea::paintGL()
     qDebug() << __FUNCTION__ ;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    QVector3D G = QVector3D(0,0,0);
-    QVector3D K = QVector3D(-2,0,0);
-    QVector3D J = QVector3D(0,0,0);
-    QVector3D H = QVector3D(0,0,0);
-
-    float GH = 0.5;
-    float HJ = GH+0.3;
-
-
-    float x = cos ( m_alpha *360 * PI / 180.0 )* GH;
-    float y = sin ( m_alpha *360 * PI / 180.0 )* GH;
-    H.setX(x);
-    H.setY(y);
-
-    float beta = (H.y()/HJ)*180/PI;
-    x = cos ( beta * PI / 180.0 )* HJ;
-    J.setX(H.x()-x);
-
-    float KJ = K.x()-J.x();
 
 
     m_program->bind(); // active le shader program
@@ -124,91 +105,31 @@ void GLArea::paintGL()
     matrix.rotate(m_angle, 0, 1, 0);
 
     m_program->setUniformValue(m_matrixUniform, matrix);
-    y = 0.9-m_anim;
 
-    Cylindre *cyl = new Cylindre(1, 1, 30, 255, 0, 255);
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->vertices);
+    //Roue *cyl = new Roue(1, 1, 30, 255, 0, 255);
 
     glEnableVertexAttribArray(m_posAttr);  // rend le VAO accessible pour glDrawArrays
     glEnableVertexAttribArray(m_colAttr);
 
-    cyl->setColors(QVector3D(0,255,255));
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
+
+    // roue 1
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, roue1.vertices);
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, roue1.colors);
+
     QMatrix4x4 cyleMat = matrix;
-    cyleMat.scale(GH+0.2,GH+0.2,0.25);
+    cyleMat.translate(-1,0,0);
     cyleMat.rotate(-m_alpha*360, 0, 0, 1);
-    cyl->draw(m_program, cyleMat,  m_matrixUniform);
+    roue1.draw(m_program, cyleMat,  m_matrixUniform);
 
-    // Axe O
+
+    // roue 2
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, roue2.vertices);
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, roue2.colors);
+
     cyleMat = matrix;
-    cyleMat.translate(0,0,-0.3);
-    cyleMat.scale(1,1,0.25);
-    cyleMat.scale(0.1,0.1,4);
+    cyleMat.translate(2,0,0);
     cyleMat.rotate(-m_alpha*360, 0, 0, 1);
-    cyl->setColors(QVector3D(255,0,255));
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
-    cyl->draw(m_program, cyleMat,  m_matrixUniform);
-
-    //H
-    cyleMat = matrix;
-    cyleMat.translate(H.x(),H.y(), 0.25);
-    cyleMat.scale(1,1,0.25);
-    cyleMat.scale(0.08,0.08, 1);
-    cyl->setColors(QVector3D(0,255,255));
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
-    cyl->draw(m_program, cyleMat,  m_matrixUniform);
-
-    //Bout
-    cyl->setColors(QVector3D(0,255,0));
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
-
-    QMatrix4x4 boutMat = cyleMat;
-    boutMat.scale(2, 2, 0.7);
-
-    cyl->draw(m_program, boutMat,  m_matrixUniform);
-
-    //Bras
-    cyl->setColors(QVector3D(0,255,0));
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
-    cyleMat = matrix;
-    cyleMat.translate(H.x(),H.y(), 0.25);
-    cyleMat.rotate(90,0,1,0);
-    cyleMat.rotate(-beta, 1, 0, 0);
-    cyleMat.translate(0,0,-HJ/2);
-    cyleMat.scale(0.08,0.08,HJ);
-    cyl->draw(m_program, cyleMat,  m_matrixUniform);
-
-    cyleMat = matrix;
-    cyleMat.translate(J.x(),J.y(), 0.35);
-    cyleMat.scale(1,1,0.4);
-    cyleMat.scale(0.08,0.08, 1);
-
-    cyl->draw(m_program, cyleMat,  m_matrixUniform);
-
-    //Bout
-    boutMat = cyleMat;
-    boutMat.scale(2, 2, 0.4);
-    boutMat.translate(0, 0, -0.65);
-
-    cyl->draw(m_program, boutMat,  m_matrixUniform);
-
-
-    cyl->setColors(QVector3D(220, 63, 220));
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
-    boutMat.translate(0,0,1.3);
-    cyl->draw(m_program, boutMat,  m_matrixUniform);
-
-    cyleMat = matrix;
-    cyleMat.translate(K.x()-KJ/2, 0, 0.45);
-    cyleMat.rotate(90, 0, 1, 0);
-    cyleMat.scale(0.08,0.08,KJ);
-    cyl->draw(m_program, cyleMat,  m_matrixUniform);
-
-    cyleMat = matrix;
-    cyleMat.rotate(-90, 0, 1, 0);
-    cyleMat.translate(0.5, 0, -K.x()+0.5);
-    cyleMat.scale(0.25, 0.25, 1);
-    cyl->draw(m_program, cyleMat,  m_matrixUniform);
+    roue2.draw(m_program, cyleMat,  m_matrixUniform);
 
 
     glDisableVertexAttribArray(m_posAttr);
@@ -269,7 +190,7 @@ void GLArea::mouseMoveEvent(QMouseEvent *ev)
 void GLArea::onTimeout()
 {
     qDebug() << __FUNCTION__ ;
-    m_alpha += 0.02;
+    m_alpha += 0.01;
     if (m_alpha > 1) m_alpha = 0;
     update();
 }

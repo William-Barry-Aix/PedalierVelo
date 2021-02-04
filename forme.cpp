@@ -15,7 +15,6 @@ void Forme::addVertice(QVector3D point){
     verticesCpt += 3;
 }
 
-
 void Forme::addColor(QVector3D color){
     colors[colorsCpt] =  color.x()/255;
     colors[colorsCpt+1] = color.y()/255;
@@ -25,15 +24,13 @@ void Forme::addColor(QVector3D color){
 
 void Forme::setColors(QVector3D colors){
     colorsCpt = 0;
-    for (int i = 0; i < 6; i++){
+    for (int i = 0; i < nbPtsFace; i++){
         addColor(colors);
     }
     QVector3D colorFacette = QVector3D(colors.x()*0.8, colors.y()*0.8, colors.z()*0.8);
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < nbPtsFacette; i++){
         addColor(colorFacette);
     }
 }
 
-Forme::~Forme(){
-}
 
