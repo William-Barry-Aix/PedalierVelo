@@ -1,7 +1,6 @@
-// CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
-
 #ifndef GLAREA_H
 #include "roue.h"
+#include "cylindre.h"
 #include <QKeyEvent>
 #include <QTimer>
 #include <QOpenGLWidget>
@@ -60,9 +59,10 @@ private:
     int m_posAttr;
     int m_colAttr;
     int m_matrixUniform;
-    Roue *cyl = nullptr;
+
     Roue roue1 = Roue(1, 1, 20, -1, 255, 255, 255);
     Roue roue2 = Roue(1, 0.5, 10, 2, 255, 255, 255);
+    Cylindre *cyl = nullptr;
     //Roue  = Roue(1, 0.5, 15, 255, 255, 255);
 };
 

@@ -1,5 +1,3 @@
-// CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
-
 #include "glarea.h"
 #include <math.h>       /* cos */
 #include <QDebug>
@@ -134,14 +132,27 @@ void GLArea::paintGL()
     roue2.draw(m_program, cyleMat,  m_matrixUniform);
 
 
+    //cylindre
+    cyl = new Cylindre(1, 1, 30, 255, 0, 255);
+
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->vertices);
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
+
+    glEnableVertexAttribArray(m_posAttr);  // rend le VAO accessible pour glDrawArrays
+    glEnableVertexAttribArray(m_colAttr);
+
+    //cyl->setColors(QVector3D(0,255,255));
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.25);
+    cyleMat.rotate(-m_alpha*360, 0, 0, 1);
+    cyl->draw(m_program, cyleMat,  m_matrixUniform);
+
+
     glDisableVertexAttribArray(m_posAttr);
     glDisableVertexAttribArray(m_colAttr);
 
     m_program->release();
 
-
-
-    cyl = nullptr;
 
 }
 

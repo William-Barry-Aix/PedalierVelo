@@ -23,6 +23,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         chaine.cpp \
+        cylindre.cpp \
         forme.cpp \
         frustumdialog.cpp \
         princ.cpp \
@@ -31,6 +32,7 @@ SOURCES += main.cpp\
 
 HEADERS  += princ.h \
         chaine.h \
+        cylindre.h \
         forme.h \
         frustumdialog.h \
         glarea.h \
