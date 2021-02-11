@@ -1,5 +1,8 @@
 #ifndef CHAINE_H
 #include "roue.h"
+#include <iostream>
+#include <cmath>
+#include <complex>
 #define PI 3.14159265358979323846
 #define CHAINE_H
 
@@ -13,6 +16,9 @@ public:
     Roue *roue = nullptr;
     float pas;
     float cenrtaxe;
+    float longChaine;
+    float angleChaine;
+    float epsilonInDent;
 protected:
     void initPoints();
 };
