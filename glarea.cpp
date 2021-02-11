@@ -89,6 +89,7 @@ void GLArea::paintGL()
     qDebug() << __FUNCTION__ ;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    QOpenGLFunctions *glFuncs = context()->functions();  // cf initializeGL
 
 
     m_program->bind(); // active le shader program
@@ -99,7 +100,7 @@ void GLArea::paintGL()
     //matrix.perspective(60.0f, m_ratio, 0.1f, 100.0f);  // = gluPerspective
 
     // Remplace gluLookAt (0, 0, 3.0, 0, 0, 0, 0, 1, 0);
-    matrix.translate(0, 0, -3.0);
+    matrix.translate(0, 0, -4.0);
 
     // Rotation de la scène pour l'animation
     matrix.rotate(m_angle, 0, 1, 0);
@@ -120,6 +121,7 @@ void GLArea::paintGL()
     cyleMat.translate(-1,0,0);
     cyleMat.rotate(-m_alpha*360, 0, 0, 1);
     roue1.draw(m_program, cyleMat,  m_matrixUniform);
+    //roue1.draw(m_program, cyleMat,  glFuncs);
 
 
     // roue 2

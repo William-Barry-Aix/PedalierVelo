@@ -1,14 +1,14 @@
 // CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
 
 #ifndef GLAREA_H
-#define GLAREA_H
-
 #include "roue.h"
 #include <QKeyEvent>
 #include <QTimer>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
+#define GLAREA_H
+
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -19,10 +19,10 @@ public:
     explicit GLArea(QWidget *parent = 0);
     ~GLArea();
 
-    double m_distCam = 0.5;
+    double m_distCam = 0;
     double m_radius = 0.5;
     double m_near = 1;
-    double m_far = 5;
+    double m_far = 7;
     double m_angle = 0;
 
 
@@ -61,8 +61,8 @@ private:
     int m_colAttr;
     int m_matrixUniform;
     Roue *cyl = nullptr;
-    Roue roue1 = Roue(1, 1, 30, 255, 255, 255);
-    Roue roue2 = Roue(1, 0.5, 15, 255, 255, 255);
+    Roue roue1 = Roue(1, 1, 20, -1, 255, 255, 255);
+    Roue roue2 = Roue(1, 0.5, 10, 2, 255, 255, 255);
     //Roue  = Roue(1, 0.5, 15, 255, 255, 255);
 };
 

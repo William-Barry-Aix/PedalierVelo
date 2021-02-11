@@ -1,5 +1,3 @@
-// CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
-
 #include "princ.h"
 #include "frustumdialog.h"
 #include <QDebug>
@@ -43,8 +41,8 @@ void Princ::openFrustumDial(){
     if (chooseFrustum.exec()){
         glarea->m_distCam = chooseFrustum.dist_camera->value();
         glarea->m_radius = chooseFrustum.radius->value();
-        glarea->m_near = chooseFrustum.near->value();
-        glarea->m_far = chooseFrustum.far->value();
+        //glarea->m_near = chooseFrustum.near->value();
+        //glarea->m_far = chooseFrustum.far->value();
         glarea->m_angle = chooseFrustum.angle->value();
     }else{
 

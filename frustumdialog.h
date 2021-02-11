@@ -1,8 +1,8 @@
 #ifndef FRUSTUMDIALOG_H
-#define FRUSTUMDIALOG_H
-
 #include <QDialog>
 #include <QDoubleSpinBox>
+#define FRUSTUMDIALOG_H
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class FrustumDialog; }
@@ -18,11 +18,11 @@ public:
 
     void fill(float dist_camera, float radius, float near, float far, float angle);
 
-    QDoubleSpinBox* dist_camera;
-    QDoubleSpinBox* radius;
-    QDoubleSpinBox* near;
-    QDoubleSpinBox* far;
-    QDoubleSpinBox* angle;
+    QDoubleSpinBox *dist_camera;
+    QDoubleSpinBox *radius;
+    //QDoubleSpinBox *near;
+    //QDoubleSpinBox *far;
+    QDoubleSpinBox *angle;
 
 
 

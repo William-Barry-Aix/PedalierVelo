@@ -11,10 +11,11 @@
 #include <QOpenGLFunctions>
 #define PI 3.14159265
 
-Roue::Roue(double ep_cyl, double r_cyl, double nb_dents, float coul_r, float coul_v, float coul_b){
+Roue::Roue(double ep_cyl, double r_cyl, double nb_dents, float origin, float coul_r, float coul_v, float coul_b){
     this->ep_cyl = ep_cyl;
     this->r_cyl = r_cyl;
     this->nb_dents = nb_dents;
+    this->origin = origin;
 
     this->coul_v = coul_v;
     this->coul_b = coul_b;
@@ -27,11 +28,13 @@ void Roue::initPoints(){
     GLfloat alpha = 360/nb_dents;
     nbPtsFace = 16;
     nbPtsFacette = 16;
+    pas = getVertex(0,r_cyl, 0).y();
     this->vertices = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
     this->colors = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
-
+    // soh
     QVector3D A = getVertex(0, 0, ep_cyl/2);//QVector3D(0,0,ep_cyl/2);
     QVector3D B = getVertex(0,r_cyl - h_dent/2, ep_cyl/2);//QVector3D(0,r_cyl - h_dent/2,-ep_cyl/2);
+
 
     QVector3D C = getVertex(alpha/4,r_cyl - h_dent/2, ep_cyl/2);//QVector3D(alpha/4,r_cyl - h_dent/2,ep_cyl/2);
     QVector3D D = getVertex((2*alpha)/4,r_cyl + h_dent/2, ep_cyl/2);//QVector3D((2*alpha)/4,r_roue + h_dent/2,-ep_cyl/2);
