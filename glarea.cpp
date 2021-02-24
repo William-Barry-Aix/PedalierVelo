@@ -141,10 +141,15 @@ void GLArea::paintGL()
     glEnableVertexAttribArray(m_posAttr);  // rend le VAO accessible pour glDrawArrays
     glEnableVertexAttribArray(m_colAttr);
 
-    //cyl->setColors(QVector3D(0,255,255));
     cyleMat = matrix;
     cyleMat.scale(0.2,0.2,0.25);
-    cyleMat.rotate(-m_alpha*360, 0, 0, 1);
+    float longChaine = 0.2;
+
+    switch (cyl->state) {
+    case 1 :
+        cyleMat.translate((-m_alpha/M_PI) * longChaine * 360 +3, 0, 1);
+    }
+
     cyl->draw(m_program, cyleMat,  m_matrixUniform);
 
 
