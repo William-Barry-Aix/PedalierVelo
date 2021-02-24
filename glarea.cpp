@@ -1,5 +1,5 @@
 #include "glarea.h"
-#include <math.h>       /* cos */
+#include <math.h>
 #include <QDebug>
 #include <QSurfaceFormat>
 #include <QMatrix4x4>
@@ -31,6 +31,13 @@ GLArea::GLArea(QWidget *parent) :
     m_timer->setInterval(50);  // msec
     connect (m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
     connect (this, SIGNAL(radiusChanged(double)), this, SLOT(setRadius(double)));
+
+    //cylindre
+    cyl = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl1 = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl2 = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl3 = new Cylindre(1, 1, 30, 255, 0, 255);
+
 }
 
 GLArea::~GLArea()
@@ -38,6 +45,11 @@ GLArea::~GLArea()
     qDebug() << "destroy GLArea";
 
     delete m_timer;
+
+    //delete cyl;
+    //delete cyl1;
+    //delete cyl2;
+    //delete cyl3;
 
     // Contrairement aux méthodes virtuelles initializeGL, resizeGL et repaintGL,
     // dans le destructeur le contexte GL n'est pas automatiquement rendu courant.
@@ -117,7 +129,7 @@ void GLArea::paintGL()
 
     QMatrix4x4 cyleMat = matrix;
     cyleMat.translate(-1,0,0);
-    cyleMat.rotate(-m_alpha*360, 0, 0, 1);
+    cyleMat.rotate(-m_alpha*180, 0, 0, 1);
     roue1.draw(m_program, cyleMat,  m_matrixUniform);
     //roue1.draw(m_program, cyleMat,  glFuncs);
 
@@ -128,12 +140,8 @@ void GLArea::paintGL()
 
     cyleMat = matrix;
     cyleMat.translate(2,0,0);
-    cyleMat.rotate(-m_alpha*360, 0, 0, 1);
+    cyleMat.rotate(-m_alpha*180, 0, 0, 1);
     roue2.draw(m_program, cyleMat,  m_matrixUniform);
-
-
-    //cylindre
-    cyl = new Cylindre(1, 1, 30, 255, 0, 255);
 
     glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->vertices);
     glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
@@ -141,26 +149,62 @@ void GLArea::paintGL()
     glEnableVertexAttribArray(m_posAttr);  // rend le VAO accessible pour glDrawArrays
     glEnableVertexAttribArray(m_colAttr);
 
+    //cylindre
+
     cyleMat = matrix;
     cyleMat.scale(0.2,0.2,0.25);
-    //float longChaine = 0.2;
 
-    cyleMat.translate(posBasDestMaillLine);
-    /*
-    switch (cyl->state) {
-    case 1 :
-        //cyleMat.translate((-m_alpha/M_PI) * longChaine * 360 +3, 0, 1);
-        cyleMat.translate(posHautGenMaillLine);
-    }
-    */
+    moveCylHautline(&cyleMat);
+
     cyl->draw(m_program, cyleMat,  m_matrixUniform);
-
 
     glDisableVertexAttribArray(m_posAttr);
     glDisableVertexAttribArray(m_colAttr);
 
-    m_program->release();
+    //cylindre1
 
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.25);
+
+    moveCylBasline(&cyleMat);
+
+    cyl1->draw(m_program, cyleMat,  m_matrixUniform);
+
+    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(m_colAttr);
+
+
+    //cylindre2
+
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.25);
+
+    moveCylLeftCircle(&cyleMat);
+
+    cyl2->draw(m_program, cyleMat,  m_matrixUniform);
+
+    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(m_colAttr);
+
+
+    //cylindre3
+
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.25);
+
+    moveCylQRightCircle(&cyleMat);
+
+    cyl3->draw(m_program, cyleMat,  m_matrixUniform);
+
+    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(m_colAttr);
+
+
+
+
+
+    //end
+    m_program->release();
 
 }
 
@@ -227,6 +271,22 @@ void GLArea::setRadius(double radius)
     }
 }
 
+void GLArea::moveCylHautline(QMatrix4x4 *matrix) {
+    QVector3D newPos = QVector3D((posHautGenMaillLine*(abs(1-m_alpha)) + posHautDestMaillLine*m_alpha));
+    matrix->translate(newPos);
+}
 
+void GLArea::moveCylBasline(QMatrix4x4 *matrix) {
+    QVector3D newPos = QVector3D((posBasGenMaillLine*m_alpha + posBasDestMaillLine*(abs(1-m_alpha))));
+    matrix->translate(newPos);
+}
 
+void GLArea::moveCylLeftCircle(QMatrix4x4 *matrix) {
+    QVector3D newPos = QVector3D(-5*sin(m_alpha*M_PI*1.2) + posHautGenMaillLine.x()-3, -5*cos(m_alpha*M_PI*1.2),posHautGenMaillLine.z());
+    matrix->translate(newPos);
+}
 
+void GLArea::moveCylQRightCircle(QMatrix4x4 *matrix) {
+    QVector3D newPos = QVector3D(2.5*sin(m_alpha*M_PI*1.2) + posHautDestMaillLine.x()+1, 2.5*cos(m_alpha*M_PI*1.2),posHautGenMaillLine.z());
+    matrix->translate(newPos);
+}

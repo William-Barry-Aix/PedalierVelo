@@ -48,7 +48,10 @@ protected:
     void mouseReleaseEvent(QMouseEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
     void teardownGL();
-
+    void moveCylHautline(QMatrix4x4 *matrix);
+    void moveCylBasline(QMatrix4x4 *matrix);
+    void moveCylLeftCircle(QMatrix4x4 *matrix);
+    void moveCylQRightCircle(QMatrix4x4 *matrix);
 
 private:
     QTimer *m_timer = nullptr;
@@ -65,13 +68,16 @@ private:
     Roue roue1 = Roue(1, 1, 20, -1, 255, 255, 255); //double ep_cyl, double r_cyl, double nb_dents, float origin, float coul_r, float coul_v, float coul_b
     Roue roue2 = Roue(1, 0.5, 10, 2, 255, 255, 255);
     Cylindre *cyl = nullptr;
+    Cylindre *cyl1 = nullptr;
+    Cylindre *cyl2 = nullptr;
+    Cylindre *cyl3 = nullptr;
     //Roue  = Roue(1, 0.5, 15, 255, 255, 255);
 
 public:
     QVector3D posHautGenMaillLine = QVector3D(6 * cos(M_PI/4) -6, 6 * sin(M_PI/4), 0);      //c'est les positions de génération
     QVector3D posHautDestMaillLine = QVector3D(3 * cos(M_PI/4) +9, 3 * sin(M_PI/4), 0);     //des cylindres qu'on avait parlé
-    QVector3D posBasGenMaillLine = QVector3D(6 * cos(-M_PI/4) -6, 6 * sin(-M_PI/4), 0);
-    QVector3D posBasDestMaillLine = QVector3D(3 * cos(-M_PI/4) +9, 3 * sin(-M_PI/4), 0);
+    QVector3D posBasGenMaillLine = QVector3D(6 * cos(-M_PI/4) -6, 6 * sin(-M_PI/4), 0);     //j'ai laissé un angle de PI pour
+    QVector3D posBasDestMaillLine = QVector3D(3 * cos(-M_PI/4) +9, 3 * sin(-M_PI/4), 0);    //simplifer les rotaion des maillons par la suite
 };
 
 #endif // GLAREA_H

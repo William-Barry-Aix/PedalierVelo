@@ -9,6 +9,7 @@
 #include <QMatrix4x4>
 #include <QSurfaceFormat>
 #include <QOpenGLFunctions>
+#include <QDebug>
 #define PI 3.14159265
 
 Cylindre::Cylindre(double ep_cyl, double r_cyl, double nb_fac, float coul_r, float coul_v, float coul_b){
@@ -21,6 +22,15 @@ Cylindre::Cylindre(double ep_cyl, double r_cyl, double nb_fac, float coul_r, flo
     this->coul_r = coul_r;
 
     initPoints();
+}
+
+Cylindre::~Cylindre(){
+    qDebug() << "detele cylindre";
+    delete [] vertices;
+    delete [] colors;
+
+    vertices = nullptr;
+    colors = nullptr;
 }
 
 void Cylindre::initPoints(){
