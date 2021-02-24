@@ -58,6 +58,9 @@ private:
     double m_anim = 0;
     double m_ratio = 1;
     double m_alpha = 0;
+    double vitesse = 0.01;
+    bool shiftPress = false;
+    bool lockPress = false;
 
     // Pour utiliser les shaders
     QOpenGLShaderProgram *m_program;

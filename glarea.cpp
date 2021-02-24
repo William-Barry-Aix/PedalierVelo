@@ -219,15 +219,32 @@ void GLArea::keyPressEvent(QKeyEvent *ev)
             if (m_angle >= 360) m_angle -= 360;
             update();
             break;
-        case Qt::Key_A :
+        case Qt::Key_D :
+            if (!m_timer->isActive())
+                m_timer->start();
+            break;
+        case Qt::Key_S :
             if (m_timer->isActive())
                 m_timer->stop();
-            else m_timer->start();
+            break;
+        case Qt::Key_A :
+            if (shiftPress || lockPress)
+                vitesse += 0.01;
+            else
+                vitesse -= 0.01;
+
+            if (vitesse < 0) { vitesse = 0; }
             break;
         case Qt::Key_R :
             if (ev->text() == "r")
                  setRadius(m_radius-0.05);
             else setRadius(m_radius+0.05);
+            break;
+        case Qt::Key_Shift :
+            shiftPress = true;
+            break;
+        case Qt::Key_CapsLock :
+            lockPress = true;
             break;
     }
 }
@@ -235,6 +252,16 @@ void GLArea::keyPressEvent(QKeyEvent *ev)
 void GLArea::keyReleaseEvent(QKeyEvent *ev)
 {
     qDebug() << __FUNCTION__ << ev->text();
+
+    switch(ev->key()) {
+        case Qt::Key_Shift :
+            shiftPress = false;
+            break;
+        case Qt::Key_CapsLock :
+            lockPress = false;
+            break;
+
+    }
 }
 
 void GLArea::mousePressEvent(QMouseEvent *ev)
@@ -255,7 +282,7 @@ void GLArea::mouseMoveEvent(QMouseEvent *ev)
 void GLArea::onTimeout()
 {
     qDebug() << __FUNCTION__ ;
-    m_alpha += 0.01;
+    m_alpha += vitesse;
     if (m_alpha > 1) m_alpha = 0;
     update();
 }
