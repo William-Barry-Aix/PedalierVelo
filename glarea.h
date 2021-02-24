@@ -6,6 +6,8 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
+#include <QVector3D>
+#include <cmath>
 #define GLAREA_H
 
 
@@ -60,10 +62,16 @@ private:
     int m_colAttr;
     int m_matrixUniform;
 
-    Roue roue1 = Roue(1, 1, 20, -1, 255, 255, 255);
+    Roue roue1 = Roue(1, 1, 20, -1, 255, 255, 255); //double ep_cyl, double r_cyl, double nb_dents, float origin, float coul_r, float coul_v, float coul_b
     Roue roue2 = Roue(1, 0.5, 10, 2, 255, 255, 255);
     Cylindre *cyl = nullptr;
     //Roue  = Roue(1, 0.5, 15, 255, 255, 255);
+
+public:
+    QVector3D posHautGenMaillLine = QVector3D(6 * cos(M_PI/4) -6, 6 * sin(M_PI/4), 0);      //c'est les positions de génération
+    QVector3D posHautDestMaillLine = QVector3D(3 * cos(M_PI/4) +9, 3 * sin(M_PI/4), 0);     //des cylindres qu'on avait parlé
+    QVector3D posBasGenMaillLine = QVector3D(6 * cos(-M_PI/4) -6, 6 * sin(-M_PI/4), 0);
+    QVector3D posBasDestMaillLine = QVector3D(3 * cos(-M_PI/4) +9, 3 * sin(-M_PI/4), 0);
 };
 
 #endif // GLAREA_H

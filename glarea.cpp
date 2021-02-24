@@ -143,13 +143,16 @@ void GLArea::paintGL()
 
     cyleMat = matrix;
     cyleMat.scale(0.2,0.2,0.25);
-    float longChaine = 0.2;
+    //float longChaine = 0.2;
 
+    cyleMat.translate(posBasDestMaillLine);
+    /*
     switch (cyl->state) {
     case 1 :
-        cyleMat.translate((-m_alpha/M_PI) * longChaine * 360 +3, 0, 1);
+        //cyleMat.translate((-m_alpha/M_PI) * longChaine * 360 +3, 0, 1);
+        cyleMat.translate(posHautGenMaillLine);
     }
-
+    */
     cyl->draw(m_program, cyleMat,  m_matrixUniform);
 
 
