@@ -176,6 +176,15 @@ void GLArea::paintGL()
     moveCylQRightCircle(&cyleMat);
 
     cyl3->draw(m_program, cyleMat, cam_mat, glFuncs);
+
+    //maillon
+
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.2);
+
+    maillon->draw(m_program, cyleMat, cam_mat, glFuncs);
+
+
     //end
     m_program->release();
 
@@ -290,13 +299,15 @@ void GLArea::makeGLObjects()
     cyl1 = new Cylindre(1, 1, 30, 255, 0, 255);
     cyl2 = new Cylindre(1, 1, 30, 255, 0, 255);
     cyl3 = new Cylindre(1, 1, 30, 255, 0, 255);
+
+    maillon = new Maillon(1, 2, 1, 0.1, 0, 0, 255, 0); //Maillon(double z_ep, double x_width, double y_height, double bevel_size, float origin, float coul_r, float coul_v, float coul_b);
 }
 
 
 void GLArea::tearGLObjects()
 {
-    delete roue1;
-    delete roue2;
+    //delete roue1;
+    //delete roue2;
 }
 void GLArea::moveCylHautline(QMatrix4x4 *matrix) {
     QVector3D newPos = QVector3D((posHautGenMaillLine*(abs(1-m_alpha)) + posHautDestMaillLine*m_alpha));

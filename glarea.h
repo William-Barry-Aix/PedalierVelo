@@ -1,6 +1,7 @@
 #ifndef GLAREA_H
 #include "roue.h"
 #include "cylindre.h"
+#include "maillon.h"
 #include <QKeyEvent>
 #include <QTimer>
 #include <QOpenGLWidget>
@@ -79,6 +80,8 @@ private:
     Cylindre *cyl1 = nullptr;
     Cylindre *cyl2 = nullptr;
     Cylindre *cyl3 = nullptr;
+
+    Maillon *maillon = nullptr;
 
 public:
     QVector3D posHautGenMaillLine = QVector3D(6 * cos(M_PI/4) -6, 6 * sin(M_PI/4), 0);      //c'est les positions de génération

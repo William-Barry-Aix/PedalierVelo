@@ -128,10 +128,17 @@ void Maillon::buildVertData(QVector<GLfloat> &data)
 }
 
 
+
 void Maillon::draw(QOpenGLShaderProgram *m_program, QMatrix4x4 matrix, int m_matrixUniform){
     matrix.rotate(0, 0, 0, 1);
     m_program->setUniformValue(m_matrixUniform, matrix);
     drawBlock();
+}
+
+void Maillon::draw(QOpenGLShaderProgram* m_program, QMatrix4x4 cyleMat, QMatrix4x4 cam_mat,  QOpenGLFunctions* glFuncs){
+    cyleMat.rotate(0, 0, 0, 1);
+    m_program->setUniformValue("mvMatrix", cam_mat*cyleMat);
+    drawBlock(m_program, glFuncs);
 }
 
 
