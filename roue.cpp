@@ -136,11 +136,11 @@ void Roue::draw(QOpenGLShaderProgram *m_program, QMatrix4x4 matrix, int m_matrix
     }
 }
 
-void Roue::draw(QOpenGLShaderProgram* m_program, QMatrix4x4 cyleMat,  QOpenGLFunctions* glFuncs){
+void Roue::draw(QOpenGLShaderProgram* m_program, QMatrix4x4 cyleMat, QMatrix4x4 cam_mat,  QOpenGLFunctions* glFuncs){
     double angle = 360/nb_dents;
     for (int i = 0; i<nb_dents; i++){
         cyleMat.rotate(angle, 0, 0, 1);
-        m_program->setUniformValue("matrix", cyleMat);
+        m_program->setUniformValue("mvMatrix", cam_mat*cyleMat);
         drawBlock(m_program, glFuncs);
     }
 }

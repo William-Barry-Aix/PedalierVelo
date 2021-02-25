@@ -6,8 +6,8 @@
 #include "roue.h"
 #define PI 3.14159265
 
-static const QString vertexShaderFile   = ":/basic.vsh";
-static const QString fragmentShaderFile = ":/basic.fsh";
+static const QString vertexShaderFile   = ":/vertex.glsl";
+static const QString fragmentShaderFile = ":/fragment.glsl";
 
 
 GLArea::GLArea(QWidget *parent) :
@@ -64,11 +64,12 @@ GLArea::~GLArea()
 
 void GLArea::initializeGL()
 {
-    qDebug() << __FUNCTION__ ;
+    //qDebug() << __FUNCTION__ ;
+
     initializeOpenGLFunctions();
+
     glEnable(GL_DEPTH_TEST);
     makeGLObjects();
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // shaders
     m_program = new QOpenGLShaderProgram(this);
@@ -110,7 +111,6 @@ void GLArea::paintGL()
     GLfloat hr = m_radius, wr = hr * m_ratio;            // = glFrustum
     qDebug() << hr << " " << wr;
     proj_mat.frustum(-wr, wr, -hr, hr, m_near, m_far);
-    m_program->setUniformValue("projMatrix", proj_mat);
 
     // Caméra
     QMatrix4x4 cam_mat;
@@ -120,6 +120,12 @@ void GLArea::paintGL()
     QMatrix4x4 matrix;
     matrix.rotate(m_angle, 0, 1, 0);
 
+    QMatrix3x3 normal_mat = matrix.normalMatrix();
+
+    m_program->setUniformValue("projMatrix", proj_mat);
+    m_program->setUniformValue("mvMatrix", matrix*cam_mat);
+    m_program->setUniformValue("norMatrix", normal_mat);
+
     QMatrix4x4 cyleMat;
 
 
@@ -127,14 +133,14 @@ void GLArea::paintGL()
     cyleMat = matrix;
     cyleMat.translate(0,0,0);
     cyleMat.rotate(-m_alpha*360, 0, 0, 1);
-    roue1->draw(m_program, cyleMat,  glFuncs);
+    roue1->draw(m_program, cyleMat, cam_mat, glFuncs);
 
 
     // Roue 2
     cyleMat = matrix;
     cyleMat.translate(2,0,0);
     cyleMat.rotate(-m_alpha*180, 0, 0, 1);
-    roue2->draw(m_program, cyleMat,  m_matrixUniform);
+    roue2->draw(m_program, cyleMat, cam_mat, glFuncs);
 
     glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->vertices);
     glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);

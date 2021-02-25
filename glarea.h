@@ -20,10 +20,10 @@ public:
     explicit GLArea(QWidget *parent = 0);
     ~GLArea();
 
-    double m_distCam = 2;
+    double m_distCam = 3;
     double m_radius = 0.5;
-    double m_near = 1;
-    double m_far = 5;
+    double m_near = 0.5;
+    double m_far = 7;
     double m_angle = 0;
 
 

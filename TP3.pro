@@ -43,3 +43,7 @@ FORMS    += princ.ui \
 
 RESOURCES += \
     TP3.qrc
+
+DISTFILES += \
+    fragment.glsl \
+    vertex.glsl

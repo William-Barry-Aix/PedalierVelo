@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>basic.fsh</file>
         <file>basic.vsh</file>
+        <file>fragment.glsl</file>
+        <file>vertex.glsl</file>
     </qresource>
 </RCC>
