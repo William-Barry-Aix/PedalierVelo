@@ -13,7 +13,9 @@ public:
     void buildVertData(QVector<GLfloat> &data);
 
     void draw(QOpenGLShaderProgram* m_program, QMatrix4x4 matrix, int m_matrixUniform);
+    void draw(QOpenGLShaderProgram *m_program, QMatrix4x4 cyleMat, QMatrix4x4 cam_mat,  QOpenGLFunctions* glFuncs);
     void drawBlock();
+    void drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs);
 
 public:
     double ep_cyl;
