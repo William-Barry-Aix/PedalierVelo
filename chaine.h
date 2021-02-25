@@ -15,6 +15,7 @@ public:
     float cenrtaxe;
 protected:
     void initPoints();
+    void buildVertData(QVector<GLfloat> &data);
 };
 
 

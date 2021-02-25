@@ -15,3 +15,7 @@ void Chaine::initPoints(){
     // TODO https://www.cours-et-exercices.com/2016/03/chaines-de-transmission-expose.html
 
 }
+void Chaine::buildVertData(QVector<GLfloat> &data)
+{
+
+}

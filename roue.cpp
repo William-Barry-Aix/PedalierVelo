@@ -22,6 +22,14 @@ Roue::Roue(double ep_cyl, double r_cyl, double nb_dents, float origin, float cou
     this->coul_r = coul_r;
 
     initPoints();
+
+
+    m_vbo.create();
+    m_vbo.bind();
+    QVector<GLfloat> vertData;
+    buildVertData(vertData);
+    m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+    m_vbo.release();
 }
 
 void Roue::initPoints(){
@@ -108,6 +116,17 @@ void Roue::initPoints(){
     addVertice(Ep);
 }
 
+void Roue::buildVertData(QVector<GLfloat> &data)
+{
+    for (int i = 0; i < verticesCpt; i++){
+        data.append(vertices[i]);
+    }
+    for (int i = 0; i < colorsCpt; i++){
+        data.append(colors[i]);
+    }
+    qDebug() << data.length() << " " << verticesCpt+colorsCpt;
+}
+
 void Roue::draw(QOpenGLShaderProgram *m_program, QMatrix4x4 matrix, int m_matrixUniform){
     double angle = 360/nb_dents;
     for (int i = 0; i<nb_dents; i++){
@@ -117,11 +136,44 @@ void Roue::draw(QOpenGLShaderProgram *m_program, QMatrix4x4 matrix, int m_matrix
     }
 }
 
+void Roue::draw(QOpenGLShaderProgram* m_program, QMatrix4x4 cyleMat,  QOpenGLFunctions* glFuncs){
+    double angle = 360/nb_dents;
+    for (int i = 0; i<nb_dents; i++){
+        cyleMat.rotate(angle, 0, 0, 1);
+        m_program->setUniformValue("matrix", cyleMat);
+        drawBlock(m_program, glFuncs);
+    }
+}
+
 void Roue::drawBlock(){
     glDrawArrays(GL_POLYGON, 0, nbPtsFace/2);
     glDrawArrays(GL_POLYGON, nbPtsFace/2, nbPtsFace/2);
     glDrawArrays(GL_QUADS, nbPtsFacette, nbPtsFacette);
 }
+
+void Roue::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
+{
+    m_vbo.bind();
+
+    program->setAttributeBuffer("posAttr",
+        GL_FLOAT, 0 * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
+    program->setAttributeBuffer("colAttr",
+        GL_FLOAT, verticesCpt * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
+    program->enableAttributeArray("posAttr");
+    program->enableAttributeArray("colAttr");
+
+    // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
+    // aux fonctions glBidule doivent être préfixés par glFuncs->.
+    glFuncs->glDrawArrays(GL_POLYGON, 0, nbPtsFace/2);
+    glFuncs->glDrawArrays(GL_POLYGON, nbPtsFace/2, nbPtsFace/2);
+    glFuncs->glDrawArrays(GL_QUADS, nbPtsFacette, nbPtsFacette);
+
+    program->disableAttributeArray("posAttr");
+    program->disableAttributeArray("colAttr");
+
+    m_vbo.release();
+}
+
 
 QVector3D Roue::getVertex(float o, float h, float z){
     GLfloat y = sin(o*PI/180)*h;

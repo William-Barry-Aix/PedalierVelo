@@ -46,6 +46,7 @@ GLArea::~GLArea()
     makeCurrent();
 
     // ici destructions de ressources GL
+    tearGLObjects();
 
     doneCurrent();
 }
@@ -56,6 +57,7 @@ void GLArea::initializeGL()
     qDebug() << __FUNCTION__ ;
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
+    makeGLObjects();
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // shaders
@@ -86,62 +88,44 @@ void GLArea::resizeGL(int w, int h)
 
 void GLArea::paintGL()
 {
-    qDebug() << __FUNCTION__ ;
+    //qDebug() << __FUNCTION__ ;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     QOpenGLFunctions *glFuncs = context()->functions();  // cf initializeGL
 
-
     m_program->bind(); // active le shader program
 
-    QMatrix4x4 matrix;
+    // Projection
+    QMatrix4x4 proj_mat;
     GLfloat hr = m_radius, wr = hr * m_ratio;            // = glFrustum
-    matrix.frustum(-wr, wr, -hr, hr, m_near-m_distCam, m_far-m_distCam);
-    //matrix.perspective(60.0f, m_ratio, 0.1f, 100.0f);  // = gluPerspective
+    proj_mat.frustum(-wr, wr, -hr, hr, m_near, m_far);
+    m_program->setUniformValue("projMatrix", proj_mat);
 
-    // Remplace gluLookAt (0, 0, 3.0, 0, 0, 0, 0, 1, 0);
-    matrix.translate(0, 0, -4.0);
+    // Caméra
+    QMatrix4x4 cam_mat;
+    cam_mat.translate(0, 0, -m_distCam);
 
     // Rotation de la scène pour l'animation
+    QMatrix4x4 matrix;
     matrix.rotate(m_angle, 0, 1, 0);
 
-    m_program->setUniformValue(m_matrixUniform, matrix);
-
-    //Roue *cyl = new Roue(1, 1, 30, 255, 0, 255);
-
-    glEnableVertexAttribArray(m_posAttr);  // rend le VAO accessible pour glDrawArrays
-    glEnableVertexAttribArray(m_colAttr);
+    QMatrix4x4 cyleMat;
 
 
-    // roue 1
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, roue1.vertices);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, roue1.colors);
-
-    QMatrix4x4 cyleMat = matrix;
-    cyleMat.translate(-1,0,0);
+    // Roue 1
+    cyleMat = matrix;
+    cyleMat.translate(0,0,0);
     cyleMat.rotate(-m_alpha*360, 0, 0, 1);
-    roue1.draw(m_program, cyleMat,  m_matrixUniform);
-    //roue1.draw(m_program, cyleMat,  glFuncs);
+    roue1->draw(m_program, cyleMat,  glFuncs);
 
 
-    // roue 2
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, roue2.vertices);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, roue2.colors);
-
+    // Roue 2
     cyleMat = matrix;
     cyleMat.translate(2,0,0);
     cyleMat.rotate(-m_alpha*360, 0, 0, 1);
-    roue2.draw(m_program, cyleMat,  m_matrixUniform);
-
-
-    glDisableVertexAttribArray(m_posAttr);
-    glDisableVertexAttribArray(m_colAttr);
+    //roue2->draw(m_program, cyleMat,  m_matrixUniform);
 
     m_program->release();
-
-
-
-    cyl = nullptr;
 
 }
 
@@ -191,7 +175,7 @@ void GLArea::mouseMoveEvent(QMouseEvent *ev)
 
 void GLArea::onTimeout()
 {
-    qDebug() << __FUNCTION__ ;
+    //qDebug() << __FUNCTION__ ;
     m_alpha += 0.01;
     if (m_alpha > 1) m_alpha = 0;
     update();
@@ -208,6 +192,27 @@ void GLArea::setRadius(double radius)
     }
 }
 
+void GLArea::setTransforms(QMatrix4x4 &cam_mat, QMatrix4x4 &shape_mat)
+{
+    QMatrix4x4 mv_mat = cam_mat*shape_mat;
+    m_program->setUniformValue("mvMatrix", mv_mat);
+
+    QMatrix3x3 nor_mat = shape_mat.normalMatrix();
+    m_program->setUniformValue("norMatrix", nor_mat);
+}
+
+void GLArea::makeGLObjects()
+{
+    roue1 = new Roue(1, 1, 20, -1, 255, 255, 255);
+    roue2 = new Roue(1, 0.5, 10, 2, 255, 255, 255);
+}
+
+
+void GLArea::tearGLObjects()
+{
+    delete roue1;
+    delete roue2;
+}
 
 
 

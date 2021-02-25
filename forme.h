@@ -22,10 +22,13 @@ public:
 
         vertices = nullptr;
         colors = nullptr;
+
+        m_vbo.destroy();
     }
     void addVertice(QVector3D value);
     void addColor(QVector3D color);
     virtual void initPoints() = 0;
+    virtual void buildVertData(QVector<GLfloat> &data) = 0;
     void draw(QOpenGLShaderProgram* m_program, QMatrix4x4* matrix, int m_matrixUniform);
     void draw(QOpenGLShaderProgram* m_program, QMatrix4x4* cyleMat,  QOpenGLFunctions* glFuncs);
     void drawBlock();
@@ -38,10 +41,10 @@ public:
     void setColors(QVector3D colors);
 
     QVector3D origin;
+    QOpenGLBuffer m_vbo;
 
 private:
     bool m_phong_shading = false;
-    QOpenGLBuffer m_vbo;
 };
 
 #endif // FORME_H

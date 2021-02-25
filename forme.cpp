@@ -12,6 +12,8 @@ void Forme::addVertice(QVector3D point){
     vertices[verticesCpt] =  point.x();
     vertices[verticesCpt+1] =  point.y();
     vertices[verticesCpt+2] = point.z();
+
+    //qDebug() << vertices[verticesCpt] << " " << vertices[verticesCpt+1] << " " << vertices[verticesCpt+2] ;
     verticesCpt += 3;
 }
 

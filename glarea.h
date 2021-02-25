@@ -47,6 +47,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
     void teardownGL();
+    void makeGLObjects();
+    void tearGLObjects();
 
 
 private:
@@ -61,8 +63,11 @@ private:
     int m_colAttr;
     int m_matrixUniform;
     Roue *cyl = nullptr;
-    Roue roue1 = Roue(1, 1, 20, -1, 255, 255, 255);
-    Roue roue2 = Roue(1, 0.5, 10, 2, 255, 255, 255);
+    Roue *roue1 = nullptr;// = Roue(1, 1, 20, -1, 255, 255, 255);
+    Roue *roue2 = nullptr;// = Roue(1, 0.5, 10, 2, 255, 255, 255);
+
+
+    void setTransforms(QMatrix4x4 &cam_mat, QMatrix4x4 &shape_mat);
     //Roue  = Roue(1, 0.5, 15, 255, 255, 255);
 };
 
