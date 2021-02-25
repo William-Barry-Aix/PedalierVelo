@@ -84,10 +84,10 @@ private:
     Maillon *maillon = nullptr;
 
 public:
-    QVector3D posHautGenMaillLine = QVector3D(6 * cos(M_PI/4) -6, 6 * sin(M_PI/4), 0);      //c'est les positions de génération
-    QVector3D posHautDestMaillLine = QVector3D(3 * cos(M_PI/4) +9, 3 * sin(M_PI/4), 0);     //des cylindres qu'on avait parlé
-    QVector3D posBasGenMaillLine = QVector3D(6 * cos(-M_PI/4) -6, 6 * sin(-M_PI/4), 0);     //j'ai laissé un angle de PI pour
-    QVector3D posBasDestMaillLine = QVector3D(3 * cos(-M_PI/4) +9, 3 * sin(-M_PI/4), 0);    //simplifer les rotaion des maillons par la suite
+    QVector3D posHautGenMaillLine = QVector3D(2.8, 10, 0);   // points obtenue par le calcul, puis arrondi
+    QVector3D posHautDestMaillLine = QVector3D(22, 5, 0);    // points obtenue par le calcul, puis arrondi
+    QVector3D posBasGenMaillLine = QVector3D(4, -10, 0);   // points obtenue par le calcul, puis arrondi
+    QVector3D posBasDestMaillLine = QVector3D(22, -5, 0);    // points obtenue par le calcul, puis arrondi
 };
 
 #endif // GLAREA_H

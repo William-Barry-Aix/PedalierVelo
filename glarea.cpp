@@ -1,4 +1,5 @@
 #include "glarea.h"
+#include <cmath>
 #include <math.h>
 #include <QDebug>
 #include <QSurfaceFormat>
@@ -143,7 +144,7 @@ void GLArea::paintGL()
 
     cyleMat = matrix;
     //cyleMat.translate(0,0,0.5);
-    cyleMat.scale(0.2,0.2,0.25);
+    cyleMat.scale(0.1,0.1,0.3);
 
     moveCylHautline(&cyleMat);
 
@@ -153,7 +154,7 @@ void GLArea::paintGL()
     //cylindre1
 
     cyleMat = matrix;
-    cyleMat.scale(0.2,0.2,0.25);
+    cyleMat.scale(0.1,0.1,0.3);
 
     moveCylBasline(&cyleMat);
 
@@ -162,7 +163,7 @@ void GLArea::paintGL()
     //cylindre2
 
     cyleMat = matrix;
-    cyleMat.scale(0.2,0.2,0.25);
+    cyleMat.scale(0.1,0.1,0.3);
 
     moveCylLeftCircle(&cyleMat);
 
@@ -171,7 +172,7 @@ void GLArea::paintGL()
     //cylindre3
 
     cyleMat = matrix;
-    cyleMat.scale(0.2,0.2,0.25);
+    cyleMat.scale(0.1,0.1,0.3);
 
     moveCylQRightCircle(&cyleMat);
 
@@ -320,11 +321,18 @@ void GLArea::moveCylBasline(QMatrix4x4 *matrix) {
 }
 
 void GLArea::moveCylLeftCircle(QMatrix4x4 *matrix) {
-    QVector3D newPos = QVector3D(-5*sin(m_alpha*M_PI*1.2) + posHautGenMaillLine.x()-3, -5*cos(m_alpha*M_PI*1.2),posHautGenMaillLine.z());
+    float offsetAlpha = fmod(m_alpha + 0.3, 1);     //idée pour l'offset entre les maillons plus tard
+    float rayon = -10.2;
+    float offset = -2.6;
+    float arcCircle = M_PI * 1.2;
+    QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle) + posHautGenMaillLine.x() + offset, rayon*cos(offsetAlpha*arcCircle),posHautGenMaillLine.z());
     matrix->translate(newPos);
 }
 
 void GLArea::moveCylQRightCircle(QMatrix4x4 *matrix) {
-    QVector3D newPos = QVector3D(2.5*sin(m_alpha*M_PI*1.2) + posHautDestMaillLine.x()+1, 2.5*cos(m_alpha*M_PI*1.2),posHautGenMaillLine.z());
+    float rayon = 5;
+    float offset = -2;
+    float arcCircle = M_PI * 1.2;
+    QVector3D newPos = QVector3D(rayon*sin(m_alpha*arcCircle) + posHautDestMaillLine.x() + offset, rayon*cos(m_alpha*arcCircle),posHautGenMaillLine.z());
     matrix->translate(newPos);
 }
