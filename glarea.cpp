@@ -33,10 +33,6 @@ GLArea::GLArea(QWidget *parent) :
     connect (this, SIGNAL(radiusChanged(double)), this, SLOT(setRadius(double)));
 
     //cylindre
-    cyl = new Cylindre(1, 1, 30, 255, 0, 255);
-    cyl1 = new Cylindre(1, 1, 30, 255, 0, 255);
-    cyl2 = new Cylindre(1, 1, 30, 255, 0, 255);
-    cyl3 = new Cylindre(1, 1, 30, 255, 0, 255);
 
 }
 
@@ -118,6 +114,7 @@ void GLArea::paintGL()
 
     // Rotation de la scène pour l'animation
     QMatrix4x4 matrix;
+    matrix.translate(0, 0, -1.5);
     matrix.rotate(m_angle, 0, 1, 0);
 
     QMatrix3x3 normal_mat = matrix.normalMatrix();
@@ -142,23 +139,16 @@ void GLArea::paintGL()
     cyleMat.rotate(-m_alpha*180, 0, 0, 1);
     roue2->draw(m_program, cyleMat, cam_mat, glFuncs);
 
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->vertices);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
-
-    glEnableVertexAttribArray(m_posAttr);  // rend le VAO accessible pour glDrawArrays
-    glEnableVertexAttribArray(m_colAttr);
-
     //cylindre
 
     cyleMat = matrix;
+    //cyleMat.translate(0,0,0.5);
     cyleMat.scale(0.2,0.2,0.25);
 
     moveCylHautline(&cyleMat);
 
-    cyl->draw(m_program, cyleMat,  m_matrixUniform);
+    cyl->draw(m_program, cyleMat, cam_mat, glFuncs);
 
-    glDisableVertexAttribArray(m_posAttr);
-    glDisableVertexAttribArray(m_colAttr);
 
     //cylindre1
 
@@ -167,11 +157,7 @@ void GLArea::paintGL()
 
     moveCylBasline(&cyleMat);
 
-    cyl1->draw(m_program, cyleMat,  m_matrixUniform);
-
-    glDisableVertexAttribArray(m_posAttr);
-    glDisableVertexAttribArray(m_colAttr);
-
+    cyl1->draw(m_program, cyleMat, cam_mat, glFuncs);
 
     //cylindre2
 
@@ -180,10 +166,7 @@ void GLArea::paintGL()
 
     moveCylLeftCircle(&cyleMat);
 
-    cyl2->draw(m_program, cyleMat,  m_matrixUniform);
-
-    glDisableVertexAttribArray(m_posAttr);
-    glDisableVertexAttribArray(m_colAttr);
+    cyl2->draw(m_program, cyleMat, cam_mat, glFuncs);
 
     //cylindre3
 
@@ -192,15 +175,7 @@ void GLArea::paintGL()
 
     moveCylQRightCircle(&cyleMat);
 
-    cyl3->draw(m_program, cyleMat,  m_matrixUniform);
-
-    glDisableVertexAttribArray(m_posAttr);
-    glDisableVertexAttribArray(m_colAttr);
-
-
-
-
-
+    cyl3->draw(m_program, cyleMat, cam_mat, glFuncs);
     //end
     m_program->release();
 
@@ -307,8 +282,14 @@ void GLArea::setTransforms(QMatrix4x4 &cam_mat, QMatrix4x4 &shape_mat)
 
 void GLArea::makeGLObjects()
 {
-    roue1 = new Roue(1, 1, 20, -1, 255, 255, 255);
-    roue2 = new Roue(1, 0.5, 10, 2, 255, 255, 255);
+    roue1 = new Roue(0.1, 1, 20, -1, 255, 255, 255);
+    roue2 = new Roue(0.1, 0.5, 10, 2, 255, 255, 255);
+
+
+    cyl = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl1 = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl2 = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl3 = new Cylindre(1, 1, 30, 255, 0, 255);
 }
 
 

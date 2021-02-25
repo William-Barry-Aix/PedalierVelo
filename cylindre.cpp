@@ -22,6 +22,14 @@ Cylindre::Cylindre(double ep_cyl, double r_cyl, double nb_fac, float coul_r, flo
     this->coul_r = coul_r;
 
     initPoints();
+
+
+    m_vbo.create();
+    m_vbo.bind();
+    QVector<GLfloat> vertData;
+    buildVertData(vertData);
+    m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+    m_vbo.release();
 }
 
 Cylindre::~Cylindre(){
@@ -74,7 +82,13 @@ void Cylindre::initPoints(){
 }
 
 void Cylindre::buildVertData(QVector<GLfloat> &data){
-
+    for (int i = 0; i < verticesCpt; i++){
+        data.append(vertices[i]);
+    }
+    for (int i = 0; i < colorsCpt; i++){
+        data.append(colors[i]);
+    }
+    qDebug() << data.length() << " " << verticesCpt+colorsCpt;
 }
 
 void Cylindre::draw(QOpenGLShaderProgram *m_program, QMatrix4x4 matrix, int m_matrixUniform){
@@ -86,9 +100,40 @@ void Cylindre::draw(QOpenGLShaderProgram *m_program, QMatrix4x4 matrix, int m_ma
     }
 }
 
+void Cylindre::draw(QOpenGLShaderProgram *m_program, QMatrix4x4 cyleMat, QMatrix4x4 cam_mat,  QOpenGLFunctions* glFuncs){
+    double angle = 360/nb_fac;
+    for (int i = 0; i<nb_fac; i++){
+        cyleMat.rotate(angle, 0, 0, 1);
+        m_program->setUniformValue("mvMatrix", cam_mat*cyleMat);
+        drawBlock(m_program, glFuncs);
+    }
+}
+
 void Cylindre::drawBlock(){
     glDrawArrays(GL_TRIANGLES, 0, nbPtsFace);
     glDrawArrays(GL_QUADS, nbPtsFace, nbPtsFacette);
+}
+
+void Cylindre::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
+{
+    m_vbo.bind();
+
+    program->setAttributeBuffer("posAttr",
+        GL_FLOAT, 0 * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
+    program->setAttributeBuffer("colAttr",
+        GL_FLOAT, verticesCpt * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
+    program->enableAttributeArray("posAttr");
+    program->enableAttributeArray("colAttr");
+
+    // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
+    // aux fonctions glBidule doivent être préfixés par glFuncs->.
+    glFuncs->glDrawArrays(GL_TRIANGLES, 0, nbPtsFace);
+    glFuncs->glDrawArrays(GL_QUADS, nbPtsFace, nbPtsFacette);
+
+    program->disableAttributeArray("posAttr");
+    program->disableAttributeArray("colAttr");
+
+    m_vbo.release();
 }
 
 
