@@ -1,7 +1,5 @@
-// CC-BY Edouard.Thiel@univ-amu.fr - 22/01/2019
-
 #include "glarea.h"
-#include <math.h>       /* cos */
+#include <math.h>
 #include <QDebug>
 #include <QSurfaceFormat>
 #include <QMatrix4x4>
@@ -33,6 +31,13 @@ GLArea::GLArea(QWidget *parent) :
     m_timer->setInterval(50);  // msec
     connect (m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
     connect (this, SIGNAL(radiusChanged(double)), this, SLOT(setRadius(double)));
+
+    //cylindre
+    cyl = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl1 = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl2 = new Cylindre(1, 1, 30, 255, 0, 255);
+    cyl3 = new Cylindre(1, 1, 30, 255, 0, 255);
+
 }
 
 GLArea::~GLArea()
@@ -40,6 +45,11 @@ GLArea::~GLArea()
     qDebug() << "destroy GLArea";
 
     delete m_timer;
+
+    //delete cyl;
+    //delete cyl1;
+    //delete cyl2;
+    //delete cyl3;
 
     // Contrairement aux méthodes virtuelles initializeGL, resizeGL et repaintGL,
     // dans le destructeur le contexte GL n'est pas automatiquement rendu courant.
@@ -81,7 +91,7 @@ void GLArea::resizeGL(int w, int h)
 
     // C'est fait par défaut
     glViewport(0, 0, w, h);
-
+    qDebug() << m_ratio;
     m_ratio = (double) w / h;
     // doProjection();
 }
@@ -98,6 +108,7 @@ void GLArea::paintGL()
     // Projection
     QMatrix4x4 proj_mat;
     GLfloat hr = m_radius, wr = hr * m_ratio;            // = glFrustum
+    qDebug() << hr << " " << wr;
     proj_mat.frustum(-wr, wr, -hr, hr, m_near, m_far);
     m_program->setUniformValue("projMatrix", proj_mat);
 
@@ -122,9 +133,69 @@ void GLArea::paintGL()
     // Roue 2
     cyleMat = matrix;
     cyleMat.translate(2,0,0);
-    cyleMat.rotate(-m_alpha*360, 0, 0, 1);
-    //roue2->draw(m_program, cyleMat,  m_matrixUniform);
+    cyleMat.rotate(-m_alpha*180, 0, 0, 1);
+    roue2->draw(m_program, cyleMat,  m_matrixUniform);
 
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->vertices);
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, cyl->colors);
+
+    glEnableVertexAttribArray(m_posAttr);  // rend le VAO accessible pour glDrawArrays
+    glEnableVertexAttribArray(m_colAttr);
+
+    //cylindre
+
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.25);
+
+    moveCylHautline(&cyleMat);
+
+    cyl->draw(m_program, cyleMat,  m_matrixUniform);
+
+    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(m_colAttr);
+
+    //cylindre1
+
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.25);
+
+    moveCylBasline(&cyleMat);
+
+    cyl1->draw(m_program, cyleMat,  m_matrixUniform);
+
+    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(m_colAttr);
+
+
+    //cylindre2
+
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.25);
+
+    moveCylLeftCircle(&cyleMat);
+
+    cyl2->draw(m_program, cyleMat,  m_matrixUniform);
+
+    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(m_colAttr);
+
+    //cylindre3
+
+    cyleMat = matrix;
+    cyleMat.scale(0.2,0.2,0.25);
+
+    moveCylQRightCircle(&cyleMat);
+
+    cyl3->draw(m_program, cyleMat,  m_matrixUniform);
+
+    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(m_colAttr);
+
+
+
+
+
+    //end
     m_program->release();
 
 }
@@ -140,15 +211,32 @@ void GLArea::keyPressEvent(QKeyEvent *ev)
             if (m_angle >= 360) m_angle -= 360;
             update();
             break;
-        case Qt::Key_A :
+        case Qt::Key_D :
+            if (!m_timer->isActive())
+                m_timer->start();
+            break;
+        case Qt::Key_S :
             if (m_timer->isActive())
                 m_timer->stop();
-            else m_timer->start();
+            break;
+        case Qt::Key_A :
+            if (shiftPress || lockPress)
+                vitesse += 0.01;
+            else
+                vitesse -= 0.01;
+
+            if (vitesse < 0) { vitesse = 0; }
             break;
         case Qt::Key_R :
             if (ev->text() == "r")
                  setRadius(m_radius-0.05);
             else setRadius(m_radius+0.05);
+            break;
+        case Qt::Key_Shift :
+            shiftPress = true;
+            break;
+        case Qt::Key_CapsLock :
+            lockPress = true;
             break;
     }
 }
@@ -156,6 +244,16 @@ void GLArea::keyPressEvent(QKeyEvent *ev)
 void GLArea::keyReleaseEvent(QKeyEvent *ev)
 {
     qDebug() << __FUNCTION__ << ev->text();
+
+    switch(ev->key()) {
+        case Qt::Key_Shift :
+            shiftPress = false;
+            break;
+        case Qt::Key_CapsLock :
+            lockPress = false;
+            break;
+
+    }
 }
 
 void GLArea::mousePressEvent(QMouseEvent *ev)
@@ -176,7 +274,7 @@ void GLArea::mouseMoveEvent(QMouseEvent *ev)
 void GLArea::onTimeout()
 {
     //qDebug() << __FUNCTION__ ;
-    m_alpha += 0.01;
+    m_alpha += vitesse;
     if (m_alpha > 1) m_alpha = 0;
     update();
 }
@@ -213,6 +311,22 @@ void GLArea::tearGLObjects()
     delete roue1;
     delete roue2;
 }
+void GLArea::moveCylHautline(QMatrix4x4 *matrix) {
+    QVector3D newPos = QVector3D((posHautGenMaillLine*(abs(1-m_alpha)) + posHautDestMaillLine*m_alpha));
+    matrix->translate(newPos);
+}
 
+void GLArea::moveCylBasline(QMatrix4x4 *matrix) {
+    QVector3D newPos = QVector3D((posBasGenMaillLine*m_alpha + posBasDestMaillLine*(abs(1-m_alpha))));
+    matrix->translate(newPos);
+}
 
+void GLArea::moveCylLeftCircle(QMatrix4x4 *matrix) {
+    QVector3D newPos = QVector3D(-5*sin(m_alpha*M_PI*1.2) + posHautGenMaillLine.x()-3, -5*cos(m_alpha*M_PI*1.2),posHautGenMaillLine.z());
+    matrix->translate(newPos);
+}
 
+void GLArea::moveCylQRightCircle(QMatrix4x4 *matrix) {
+    QVector3D newPos = QVector3D(2.5*sin(m_alpha*M_PI*1.2) + posHautDestMaillLine.x()+1, 2.5*cos(m_alpha*M_PI*1.2),posHautGenMaillLine.z());
+    matrix->translate(newPos);
+}
