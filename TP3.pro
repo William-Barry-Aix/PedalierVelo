@@ -26,6 +26,7 @@ SOURCES += main.cpp\
         cylindre.cpp \
         forme.cpp \
         frustumdialog.cpp \
+        maillon.cpp \
         princ.cpp \
         glarea.cpp \
         roue.cpp
@@ -36,6 +37,7 @@ HEADERS  += princ.h \
         forme.h \
         frustumdialog.h \
         glarea.h \
+        maillon.h \
         roue.h
 
 FORMS    += princ.ui \
