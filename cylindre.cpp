@@ -48,6 +48,7 @@ void Cylindre::initPoints(){
 
     this->vertices = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
     this->colors = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
+    this->normals = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
 
     QVector3D A = QVector3D(0,0,ep_cyl/2);
     QVector3D B = QVector3D(0,0,-ep_cyl/2);
@@ -68,16 +69,30 @@ void Cylindre::initPoints(){
     addVertice(A);
     addVertice(C);
     addVertice(F);
+    QVector3D normal;
+    normal = getNormal();
+    for (int i = 0; i < 3; i++){
+        addNormal(normal);
+    }
 
 
     addVertice(B);
     addVertice(D);
     addVertice(E);
+    normal.setZ(-normal.z());
+    for (int i = 0; i < 3; i++){
+        addNormal(normal);
+    }
 
     addVertice(C);
     addVertice(D);
     addVertice(E);
     addVertice(F);
+    normal = getNormal();
+    normal = -normal;
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
 }
 
@@ -87,6 +102,9 @@ void Cylindre::buildVertData(QVector<GLfloat> &data){
     }
     for (int i = 0; i < colorsCpt; i++){
         data.append(colors[i]);
+    }
+    for (int i = 0; i < normalCpt; i++){
+        data.append(normals[i]);
     }
     qDebug() << data.length() << " " << verticesCpt+colorsCpt;
 }
@@ -122,8 +140,11 @@ void Cylindre::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFunc
         GL_FLOAT, 0 * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
     program->setAttributeBuffer("colAttr",
         GL_FLOAT, verticesCpt * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
+    program->setAttributeBuffer("norAttr",
+        GL_FLOAT, (verticesCpt+colorsCpt) * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
+    program->enableAttributeArray("norAttr");
 
     // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
     // aux fonctions glBidule doivent être préfixés par glFuncs->.
@@ -132,6 +153,7 @@ void Cylindre::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFunc
 
     program->disableAttributeArray("posAttr");
     program->disableAttributeArray("colAttr");
+    program->disableAttributeArray("norAttr");
 
     m_vbo.release();
 }
