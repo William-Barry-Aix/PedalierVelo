@@ -24,15 +24,38 @@ void Forme::addColor(QVector3D color){
     colorsCpt += 3;
 }
 
+void Forme::addNormal(QVector3D normal){
+    normals[normalCpt] =  normal.x();
+    normals[normalCpt+1] = normal.y();
+    normals[normalCpt+2] = normal.z();
+    normalCpt += 3;
+}
+
 void Forme::setColors(QVector3D colors){
     colorsCpt = 0;
-    for (int i = 0; i < nbPtsFace; i++){
+    for (int i = 0; i < nbPtsFace+nbPtsFacette; i++){
         addColor(colors);
     }
+    /*
     QVector3D colorFacette = QVector3D(colors.x()*0.8, colors.y()*0.8, colors.z()*0.8);
     for (int i = 0; i < nbPtsFacette; i++){
         addColor(colorFacette);
     }
+    */
+}
+QVector3D Forme::getPoint(int id){
+    int pos = id*3;
+    return QVector3D(vertices[pos], vertices[pos+1], vertices[pos+2]);
 }
 
+QVector3D Forme::getNormal(){
+    int lastId = verticesCpt/3 - 1;
+    qDebug() << lastId;
+    QVector3D A = getPoint(lastId-2);
+    QVector3D B = getPoint(lastId-1);
+    QVector3D C = getPoint(lastId);
 
+    QVector3D vBA = A - B,
+              vBC = C - B;
+    return QVector3D::normal(vBC, vBA);
+}

@@ -39,20 +39,16 @@ void Roue::initPoints(){
     pas = getVertex(0,r_cyl, 0).y();
     this->vertices = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
     this->colors = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
+    this->normals = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
     // soh
     QVector3D A = getVertex(0, 0, ep_cyl/2);//QVector3D(0,0,ep_cyl/2);
     QVector3D B = getVertex(0,r_cyl - h_dent/2, ep_cyl/2);//QVector3D(0,r_cyl - h_dent/2,-ep_cyl/2);
-
-
     QVector3D C = getVertex(alpha/4,r_cyl - h_dent/2, ep_cyl/2);//QVector3D(alpha/4,r_cyl - h_dent/2,ep_cyl/2);
     QVector3D D = getVertex((2*alpha)/4,r_cyl + h_dent/2, ep_cyl/2);//QVector3D((2*alpha)/4,r_roue + h_dent/2,-ep_cyl/2);
-
     QVector3D E = getVertex((3*alpha)/4, r_cyl + h_dent/2, ep_cyl/2);//QVector3D((2*alpha)/4,r_roue + h_dent/2,-ep_cyl/2);
     QVector3D F = getVertex(alpha, r_cyl - h_dent/2, ep_cyl/2);//QVector3D((2*alpha)/4,r_roue + h_dent/2,-ep_cyl/2);
-
     QVector3D G = getVertex(alpha, 0, ep_cyl/2);//QVector3D((2*alpha)/4,r_roue + h_dent/2,-ep_cyl/2);
     QVector3D H = getVertex((2*alpha)/4, 0, ep_cyl/2);//QVector3D((2*alpha)/4,r_roue + h_dent/2,-ep_cyl/2);
-
 
     QVector3D Ap = A;
     QVector3D Bp = B;
@@ -84,6 +80,10 @@ void Roue::initPoints(){
     addVertice(F);
     addVertice(G);
     addVertice(H);
+    QVector3D normal = QVector3D(0,0,1);
+    for (int i = 0; i < 8; i++){
+        addNormal(normal);
+    }
 
     addVertice(Ap);
     addVertice(Bp);
@@ -93,27 +93,46 @@ void Roue::initPoints(){
     addVertice(Fp);
     addVertice(Gp);
     addVertice(Hp);
-
+    normal = QVector3D(0,0,-1);
+    for (int i = 0; i < 8; i++){
+        addNormal(normal);
+    }
 
     addVertice(B);
     addVertice(C);
     addVertice(Cp);
     addVertice(Bp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(C);
     addVertice(D);
     addVertice(Dp);
     addVertice(Cp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(D);
     addVertice(E);
     addVertice(Ep);
     addVertice(Dp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(E);
     addVertice(F);
     addVertice(Fp);
     addVertice(Ep);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 }
 
 void Roue::buildVertData(QVector<GLfloat> &data)
@@ -124,7 +143,10 @@ void Roue::buildVertData(QVector<GLfloat> &data)
     for (int i = 0; i < colorsCpt; i++){
         data.append(colors[i]);
     }
-    qDebug() << data.length() << " " << verticesCpt+colorsCpt;
+    for (int i = 0; i < normalCpt; i++){
+        data.append(normals[i]);
+    }
+    qDebug() << data.length() << " " << verticesCpt+colorsCpt+normalCpt;
 }
 
 void Roue::draw(QOpenGLShaderProgram *m_program, QMatrix4x4 matrix, int m_matrixUniform){
@@ -159,8 +181,11 @@ void Roue::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
         GL_FLOAT, 0 * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
     program->setAttributeBuffer("colAttr",
         GL_FLOAT, verticesCpt * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
+    program->setAttributeBuffer("norAttr",
+        GL_FLOAT, (verticesCpt+colorsCpt) * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
+    program->enableAttributeArray("norAttr");
 
     // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
     // aux fonctions glBidule doivent être préfixés par glFuncs->.
@@ -170,6 +195,7 @@ void Roue::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs)
 
     program->disableAttributeArray("posAttr");
     program->disableAttributeArray("colAttr");
+    program->disableAttributeArray("norAttr");
 
     m_vbo.release();
 }
