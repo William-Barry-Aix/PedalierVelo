@@ -9,6 +9,7 @@
 #include <QOpenGLShaderProgram>
 #include <QVector3D>
 #include <cmath>
+#include <QList>
 #define GLAREA_H
 
 
@@ -52,10 +53,10 @@ protected:
     void makeGLObjects();
     void tearGLObjects();
 
-    void moveCylHautline(QMatrix4x4 *matrix);
-    void moveCylBasline(QMatrix4x4 *matrix);
-    void moveCylLeftCircle(QMatrix4x4 *matrix);
-    void moveCylQRightCircle(QMatrix4x4 *matrix);
+    void moveCylHautline(QMatrix4x4 *matrix, float offset);
+    void moveCylBasline(QMatrix4x4 *matrix, float offset);
+    void moveCylLeftCircle(QMatrix4x4 *matrix, float offset);
+    void moveCylQRightCircle(QMatrix4x4 *matrix, float offset);
 
 private:
     QTimer *m_timer = nullptr;
@@ -76,10 +77,24 @@ private:
 
 
     void setTransforms(QMatrix4x4 &cam_mat, QMatrix4x4 &shape_mat);
-    Cylindre *cyl = nullptr;
-    Cylindre *cyl1 = nullptr;
-    Cylindre *cyl2 = nullptr;
-    Cylindre *cyl3 = nullptr;
+
+    double list1Size = 7;
+    QList<Cylindre> cylPosList1;            // cylindre en ligne droite en haut
+
+    double list2Size = 7;
+    QList<Cylindre> cylPosList2;            // cylindre en ligne droite en bas
+
+    double list3Size = 12;
+    QList<Cylindre> cylPosList3;            // cylindre autour de la grande roue
+
+    double list4Size = 5;
+    QList<Cylindre> cylPosList4;            // cylindr eautour de la petite roue
+
+
+    //Cylindre *cyl = nullptr;
+    //Cylindre *cyl1 = nullptr;
+    //Cylindre *cyl2 = nullptr;
+    //Cylindre *cyl3 = nullptr;
 
     Maillon *maillon = nullptr;
 

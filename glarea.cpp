@@ -130,7 +130,7 @@ void GLArea::paintGL()
     // Roue 1
     cyleMat = matrix;
     cyleMat.translate(0,0,0);
-    cyleMat.rotate(-m_alpha*360, 0, 0, 1);
+    cyleMat.rotate(-m_alpha*220, 0, 0, 1);
     roue1->draw(m_program, cyleMat, cam_mat, glFuncs);
 
 
@@ -142,17 +142,37 @@ void GLArea::paintGL()
 
     //cylindre
 
-    cyleMat = matrix;
-    //cyleMat.translate(0,0,0.5);
-    cyleMat.scale(0.1,0.1,0.3);
+    for ( int i = 0; i < list1Size; i++ ) {
+        cyleMat = matrix;
+        cyleMat.scale(0.1,0.1,0.3);
+        moveCylHautline(&cyleMat, i);
+        cylPosList1[i].draw(m_program, cyleMat, cam_mat, glFuncs);
+    }
 
-    moveCylHautline(&cyleMat);
 
-    cyl->draw(m_program, cyleMat, cam_mat, glFuncs);
+    for ( int i = 0; i < list2Size; i++ ) {
+        cyleMat = matrix;
+        cyleMat.scale(0.1,0.1,0.3);
+        moveCylBasline(&cyleMat, i);
+        cylPosList2[i].draw(m_program, cyleMat, cam_mat, glFuncs);
+    }
 
+    for ( int i = 0; i < list3Size; i++ ) {
+        cyleMat = matrix;
+        cyleMat.scale(0.1,0.1,0.3);
+        moveCylLeftCircle(&cyleMat, i);
+        cylPosList3[i].draw(m_program, cyleMat, cam_mat, glFuncs);
+    }
+
+    for ( int i = 0; i < list4Size; i++ ) {
+        cyleMat = matrix;
+        cyleMat.scale(0.1,0.1,0.3);
+        moveCylQRightCircle(&cyleMat, i);
+        cylPosList4[i].draw(m_program, cyleMat, cam_mat, glFuncs);
+    }
 
     //cylindre1
-
+    /*
     cyleMat = matrix;
     cyleMat.scale(0.1,0.1,0.3);
 
@@ -185,7 +205,7 @@ void GLArea::paintGL()
 
     maillon->draw(m_program, cyleMat, cam_mat, glFuncs);
 
-
+    */
     //end
     m_program->release();
 
@@ -295,11 +315,30 @@ void GLArea::makeGLObjects()
     roue1 = new Roue(0.1, 1, 20, -1, 255, 255, 255);
     roue2 = new Roue(0.1, 0.5, 10, 2, 255, 255, 255);
 
+    for ( int i = 0; i < list1Size; i++ ) {
+        Cylindre *cyl = new Cylindre(1, 1, 30, 255, 0, 0);
+        cylPosList1.append(*cyl);
+    }
 
-    cyl = new Cylindre(1, 1, 30, 255, 0, 255);
-    cyl1 = new Cylindre(1, 1, 30, 255, 0, 255);
-    cyl2 = new Cylindre(1, 1, 30, 255, 0, 255);
-    cyl3 = new Cylindre(1, 1, 30, 255, 0, 255);
+    for ( int i = 0; i < list2Size; i++ ) {
+        Cylindre *cyl = new Cylindre(1, 1, 30, 255, 255, 0);
+        cylPosList2.append(*cyl);
+    }
+
+    for ( int i = 0; i < list3Size; i++ ) {
+        Cylindre *cyl = new Cylindre(1, 1, 30, 255, 0, 255);
+        cylPosList3.append(*cyl);
+    }
+
+    for ( int i = 0; i < list4Size; i++ ) {
+        Cylindre *cyl = new Cylindre(1, 1, 30, 0, 0, 255);
+        cylPosList4.append(*cyl);
+    }
+
+    //cyl = new Cylindre(1, 1, 30, 255, 0, 255);
+    //cyl1 = new Cylindre(1, 1, 30, 255, 0, 255);
+    //cyl2 = new Cylindre(1, 1, 30, 255, 0, 255);
+    //cyl3 = new Cylindre(1, 1, 30, 255, 0, 255);
 
     maillon = new Maillon(1, 2, 1, 0.1, 0, 0, 255, 0); //Maillon(double z_ep, double x_width, double y_height, double bevel_size, float origin, float coul_r, float coul_v, float coul_b);
 }
@@ -310,29 +349,35 @@ void GLArea::tearGLObjects()
     //delete roue1;
     //delete roue2;
 }
-void GLArea::moveCylHautline(QMatrix4x4 *matrix) {
-    QVector3D newPos = QVector3D((posHautGenMaillLine*(abs(1-m_alpha)) + posHautDestMaillLine*m_alpha));
+
+void GLArea::moveCylHautline(QMatrix4x4 *matrix, float offset) {
+    double x1 = fmod(m_alpha + offset/list1Size, 1);
+    double x2 = fmod( abs(1 - x1), 1);
+    QVector3D newPos = QVector3D(posHautGenMaillLine*x2 + posHautDestMaillLine*x1);
     matrix->translate(newPos);
 }
 
-void GLArea::moveCylBasline(QMatrix4x4 *matrix) {
-    QVector3D newPos = QVector3D((posBasGenMaillLine*m_alpha + posBasDestMaillLine*(abs(1-m_alpha))));
+void GLArea::moveCylBasline(QMatrix4x4 *matrix, float offset) {
+    double x1 = fmod(m_alpha + offset/list1Size, 1);
+    double x2 = fmod( abs(1 - x1), 1);
+    QVector3D newPos = QVector3D(posBasGenMaillLine*x1 + posBasDestMaillLine*x2);
     matrix->translate(newPos);
 }
 
-void GLArea::moveCylLeftCircle(QMatrix4x4 *matrix) {
-    float offsetAlpha = fmod(m_alpha + 0.3, 1);     //idée pour l'offset entre les maillons plus tard
-    float rayon = -10.2;
-    float offset = -2.6;
+void GLArea::moveCylLeftCircle(QMatrix4x4 *matrix, float offset) {
+    float offsetAlpha = fmod(m_alpha + offset/list3Size, 1);     //idée pour l'offset entre les maillons plus tard
+    float rayon = -10.5;
+    float offsetRayon = -2.6;
     float arcCircle = M_PI * 1.2;
-    QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle) + posHautGenMaillLine.x() + offset, rayon*cos(offsetAlpha*arcCircle),posHautGenMaillLine.z());
+    QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle - 0.3) + posHautGenMaillLine.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle - 0.3),posHautGenMaillLine.z());
     matrix->translate(newPos);
 }
 
-void GLArea::moveCylQRightCircle(QMatrix4x4 *matrix) {
+void GLArea::moveCylQRightCircle(QMatrix4x4 *matrix, float offset) {
+    float offsetAlpha = fmod(m_alpha + offset/list4Size, 1);
     float rayon = 5;
-    float offset = -2;
-    float arcCircle = M_PI * 1.2;
-    QVector3D newPos = QVector3D(rayon*sin(m_alpha*arcCircle) + posHautDestMaillLine.x() + offset, rayon*cos(m_alpha*arcCircle),posHautGenMaillLine.z());
+    float offsetRayon = -2;
+    float arcCircle = M_PI * 0.8;
+    QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle +0.1) + posHautDestMaillLine.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle +0.1),posHautGenMaillLine.z());
     matrix->translate(newPos);
 }
