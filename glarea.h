@@ -96,10 +96,10 @@ private:
     QList<Cylindre> cylPosList4;            // cylindr eautour de la petite roue
 
     //maillons
-    double maillList1Size = 6;
+    double maillList1Size = 7;
     QList<Maillon> maillPosList1;            // cylindre en ligne droite en haut
 
-    double maillList2Size = 6;
+    double maillList2Size = 7;
     QList<Maillon> maillPosList2;            // cylindre en ligne droite en bas
 
     double maillList3Size = 12;
@@ -118,7 +118,7 @@ public:
     QVector3D posHautGenMaillLine2 = QVector3D(1.4, 5, 0);   // points obtenue par le calcul, puis arrondi
     QVector3D posHautDestMaillLine2 = QVector3D(11, 2.5, 0);    // points obtenue par le calcul, puis arrondi
     QVector3D posBasGenMaillLine2 = QVector3D(2, -5, 0);   // points obtenue par le calcul, puis arrondi
-    QVector3D posBasDestMaillLine2 = QVector3D(1, -2.5, 0);    // points obtenue par le calcul, puis arrondi
+    QVector3D posBasDestMaillLine2 = QVector3D(11, -2.5, 0);    // points obtenue par le calcul, puis arrondi
 };
 
 #endif // GLAREA_H

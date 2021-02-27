@@ -140,7 +140,7 @@ void GLArea::paintGL()
     cyleMat.rotate(-m_alpha*180, 0, 0, 1);
     roue2->draw(m_program, cyleMat, cam_mat, glFuncs);
 
-    //cylindre
+    // ---- liste des cylindres ----
 
     for ( int i = 0; i < list1Size; i++ ) {
         cyleMat = matrix;
@@ -148,7 +148,6 @@ void GLArea::paintGL()
         moveCylHautline(&cyleMat, i);
         cylPosList1[i].draw(m_program, cyleMat, cam_mat, glFuncs);
     }
-
 
     for ( int i = 0; i < list2Size; i++ ) {
         cyleMat = matrix;
@@ -173,14 +172,13 @@ void GLArea::paintGL()
 
 
 
-    //maillons
+    //---- liste des maillons ----
     for ( int i = 0; i < maillList1Size; i++ ) {
         cyleMat = matrix;
         cyleMat.scale(0.2,0.2,0.2);
         moveMaillHautline(&cyleMat, i);
         maillPosList1[i].draw(m_program, cyleMat, cam_mat, glFuncs);
     }
-
 
     for ( int i = 0; i < maillList2Size; i++ ) {
         cyleMat = matrix;
@@ -364,6 +362,7 @@ void GLArea::tearGLObjects()
     //delete roue2;
 }
 
+// ---- cylindre ----
 void GLArea::moveCylHautline(QMatrix4x4 *matrix, float offset) {
     double x1 = fmod(m_alpha + offset/list1Size, 1);
     double x2 = fmod( abs(1 - x1), 1);
@@ -379,7 +378,7 @@ void GLArea::moveCylBasline(QMatrix4x4 *matrix, float offset) {
 }
 
 void GLArea::moveCylLeftCircle(QMatrix4x4 *matrix, float offset) {
-    float offsetAlpha = fmod(m_alpha + offset/list3Size, 1);     //idée pour l'offset entre les maillons plus tard
+    float offsetAlpha = fmod(m_alpha + offset/list3Size, 1);
     float rayon = -10.5;
     float offsetRayon = -2.6;
     float arcCircle = M_PI * 1.2;
@@ -392,39 +391,43 @@ void GLArea::moveCylQRightCircle(QMatrix4x4 *matrix, float offset) {
     float rayon = 5;
     float offsetRayon = -2;
     float arcCircle = M_PI * 0.8;
-    QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle +0.1) + posHautDestMaillLine.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle +0.1),posHautGenMaillLine.z());
+    QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle + 0.2) + posHautDestMaillLine.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle +0.2),posHautGenMaillLine.z());
     matrix->translate(newPos);
 }
 
-
+// ---- maillon ----
 void GLArea::moveMaillHautline(QMatrix4x4 *matrix, float offset) {
-    double x1 = fmod(m_alpha + offset/list1Size, 1);
+    double x1 = fmod(m_alpha + offset/maillList1Size, 1);
     double x2 = fmod( abs(1 - x1), 1);
     QVector3D newPos = QVector3D(posHautGenMaillLine2*x2 + posHautDestMaillLine2*x1);
     matrix->translate(newPos);
+    matrix->rotate(-13, 0, 0, 1);
 }
 
 void GLArea::moveMaillBasline(QMatrix4x4 *matrix, float offset) {
-    double x1 = fmod(m_alpha + offset/list1Size, 1);
+    double x1 = fmod(m_alpha + offset/maillList2Size, 1);
     double x2 = fmod( abs(1 - x1), 1);
     QVector3D newPos = QVector3D(posBasGenMaillLine2*x1 + posBasDestMaillLine2*x2);
     matrix->translate(newPos);
+    matrix->rotate(13, 0, 0, 1);
 }
 
 void GLArea::moveMaillLeftCircle(QMatrix4x4 *matrix, float offset) {
-    float offsetAlpha = fmod(m_alpha + offset/list3Size, 1);     //idée pour l'offset entre les maillons plus tard
+    float offsetAlpha = fmod(m_alpha + offset/list3Size, 1);
     float rayon = -5.25;
-    float offsetRayon = -2.6;
+    float offsetRayon = -1.25;
     float arcCircle = M_PI * 1.2;
     QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle - 0.3) + posHautGenMaillLine2.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle - 0.3),posHautGenMaillLine2.z());
     matrix->translate(newPos);
+    matrix->rotate(-180 * 1.2 * offsetAlpha + 20, 0, 0, 1);
 }
 
 void GLArea::moveMaillQRightCircle(QMatrix4x4 *matrix, float offset) {
     float offsetAlpha = fmod(m_alpha + offset/list4Size, 1);
     float rayon = 2.5;
-    float offsetRayon = -2;
+    float offsetRayon = -1;
     float arcCircle = M_PI * 0.8;
-    QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle +0.1) + posHautDestMaillLine2.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle +0.1),posHautGenMaillLine2.z());
+    QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle + 0.2) + posHautDestMaillLine2.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle +0.2),posHautGenMaillLine2.z());
     matrix->translate(newPos);
+    matrix->rotate(-180 * 0.8 * offsetAlpha - 10, 0, 0, 1);
 }

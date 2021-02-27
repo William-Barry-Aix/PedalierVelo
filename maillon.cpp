@@ -36,7 +36,7 @@ Maillon::Maillon(double z_ep, double x_width, double y_height, double bevel_size
 void Maillon::initPoints(){
 
     nbPtsFace = 16;         //ce hasard : les roues c'est le meme nb de points que les maillons ^^
-    nbPtsFacette = 16;
+    nbPtsFacette = 32;
 
     this->vertices = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
     this->colors = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
@@ -63,19 +63,20 @@ void Maillon::initPoints(){
     QVector3D Gp = G;
     QVector3D Hp = H;
 
-    Ap.setZ(z_ep/2);
-    Bp.setZ(z_ep/2);
-    Cp.setZ(z_ep/2);
-    Dp.setZ(z_ep/2);
-    Ep.setZ(z_ep/2);
-    Fp.setZ(z_ep/2);
-    Gp.setZ(z_ep/2);
-    Hp.setZ(z_ep/2);
+    Ap.setZ(-z_ep/2);
+    Bp.setZ(-z_ep/2);
+    Cp.setZ(-z_ep/2);
+    Dp.setZ(-z_ep/2);
+    Ep.setZ(-z_ep/2);
+    Fp.setZ(-z_ep/2);
+    Gp.setZ(-z_ep/2);
+    Hp.setZ(-z_ep/2);
 
     QVector3D color = QVector3D(coul_r, coul_v, coul_b);
 
     setColors(color);
 
+    //face de devant
     addVertice(A);
     addVertice(B);
     addVertice(C);
@@ -84,7 +85,7 @@ void Maillon::initPoints(){
     addVertice(F);
     addVertice(G);
     addVertice(H);
-
+    //face de derriere
     addVertice(Ap);
     addVertice(Bp);
     addVertice(Cp);
@@ -94,6 +95,11 @@ void Maillon::initPoints(){
     addVertice(Gp);
     addVertice(Hp);
 
+    //quads autour du modèle
+    addVertice(A);
+    addVertice(B);
+    addVertice(Bp);
+    addVertice(Ap);
 
     addVertice(B);
     addVertice(C);
@@ -114,6 +120,21 @@ void Maillon::initPoints(){
     addVertice(F);
     addVertice(Fp);
     addVertice(Ep);
+
+    addVertice(F);
+    addVertice(G);
+    addVertice(Gp);
+    addVertice(Fp);
+
+    addVertice(G);
+    addVertice(H);
+    addVertice(Hp);
+    addVertice(Gp);
+
+    addVertice(H);
+    addVertice(A);
+    addVertice(Ap);
+    addVertice(Hp);
 }
 
 void Maillon::buildVertData(QVector<GLfloat> &data)
@@ -163,7 +184,7 @@ void Maillon::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs
     // aux fonctions glBidule doivent être préfixés par glFuncs->.
     glFuncs->glDrawArrays(GL_POLYGON, 0, nbPtsFace/2);
     glFuncs->glDrawArrays(GL_POLYGON, nbPtsFace/2, nbPtsFace/2);
-    glFuncs->glDrawArrays(GL_QUADS, nbPtsFacette, nbPtsFacette);
+    glFuncs->glDrawArrays(GL_QUADS, nbPtsFace, nbPtsFacette);
 
     program->disableAttributeArray("posAttr");
     program->disableAttributeArray("colAttr");
