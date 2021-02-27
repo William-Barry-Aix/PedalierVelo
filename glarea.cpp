@@ -137,7 +137,7 @@ void GLArea::paintGL()
     // Roue 2
     cyleMat = matrix;
     cyleMat.translate(2,0,0);
-    cyleMat.rotate(-m_alpha*180, 0, 0, 1);
+    cyleMat.rotate(-m_alpha*180*2.4, 0, 0, 1);
     roue2->draw(m_program, cyleMat, cam_mat, glFuncs);
 
     // ---- liste des cylindres ----
@@ -364,14 +364,14 @@ void GLArea::tearGLObjects()
 
 // ---- cylindre ----
 void GLArea::moveCylHautline(QMatrix4x4 *matrix, float offset) {
-    double x1 = fmod(m_alpha + offset/list1Size, 1);
+    double x1 = fmod(m_alpha*2 + offset/list1Size, 1);
     double x2 = fmod( abs(1 - x1), 1);
     QVector3D newPos = QVector3D(posHautGenMaillLine*x2 + posHautDestMaillLine*x1);
     matrix->translate(newPos);
 }
 
 void GLArea::moveCylBasline(QMatrix4x4 *matrix, float offset) {
-    double x1 = fmod(m_alpha + offset/list1Size, 1);
+    double x1 = fmod(m_alpha*2 + offset/list1Size, 1);
     double x2 = fmod( abs(1 - x1), 1);
     QVector3D newPos = QVector3D(posBasGenMaillLine*x1 + posBasDestMaillLine*x2);
     matrix->translate(newPos);
@@ -387,7 +387,7 @@ void GLArea::moveCylLeftCircle(QMatrix4x4 *matrix, float offset) {
 }
 
 void GLArea::moveCylQRightCircle(QMatrix4x4 *matrix, float offset) {
-    float offsetAlpha = fmod(m_alpha + offset/list4Size, 1);
+    float offsetAlpha = fmod(m_alpha*2.7 + offset/list4Size, 1);
     float rayon = 5;
     float offsetRayon = -2;
     float arcCircle = M_PI * 0.8;
@@ -423,7 +423,7 @@ void GLArea::moveMaillLeftCircle(QMatrix4x4 *matrix, float offset) {
 }
 
 void GLArea::moveMaillQRightCircle(QMatrix4x4 *matrix, float offset) {
-    float offsetAlpha = fmod(m_alpha + offset/list4Size, 1);
+    float offsetAlpha = fmod(m_alpha*2.7 + offset/list4Size, 1);
     float rayon = 2.5;
     float offsetRayon = -1;
     float arcCircle = M_PI * 0.8;
