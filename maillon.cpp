@@ -40,6 +40,7 @@ void Maillon::initPoints(){
 
     this->vertices = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
     this->colors = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
+    this->normals = new GLfloat[nbPtsFace*3 + nbPtsFacette*3];
 
     QVector3D A = QVector3D((x_width/2) - bevel_size, -y_height/2, z_ep/2);
     QVector3D B = QVector3D(x_width/2, -(y_height/2) + bevel_size, z_ep/2);
@@ -85,6 +86,11 @@ void Maillon::initPoints(){
     addVertice(F);
     addVertice(G);
     addVertice(H);
+    QVector3D normal;
+    normal = getNormal();
+    for (int i = 0; i < 8; i++){
+        addNormal(normal);
+    }
     //face de derriere
     addVertice(Ap);
     addVertice(Bp);
@@ -94,47 +100,83 @@ void Maillon::initPoints(){
     addVertice(Fp);
     addVertice(Gp);
     addVertice(Hp);
+    normal.setZ(-normal.z());
+    for (int i = 0; i < 8; i++){
+        addNormal(normal);
+    }
 
     //quads autour du modèle
     addVertice(A);
     addVertice(B);
     addVertice(Bp);
     addVertice(Ap);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(B);
     addVertice(C);
     addVertice(Cp);
     addVertice(Bp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(C);
     addVertice(D);
     addVertice(Dp);
     addVertice(Cp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(D);
     addVertice(E);
     addVertice(Ep);
     addVertice(Dp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(E);
     addVertice(F);
     addVertice(Fp);
     addVertice(Ep);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(F);
     addVertice(G);
     addVertice(Gp);
     addVertice(Fp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(G);
     addVertice(H);
     addVertice(Hp);
     addVertice(Gp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 
     addVertice(H);
     addVertice(A);
     addVertice(Ap);
     addVertice(Hp);
+    normal = getNormal();
+    for (int i = 0; i < 4; i++){
+        addNormal(normal);
+    }
 }
 
 void Maillon::buildVertData(QVector<GLfloat> &data)
@@ -145,7 +187,10 @@ void Maillon::buildVertData(QVector<GLfloat> &data)
     for (int i = 0; i < colorsCpt; i++){
         data.append(colors[i]);
     }
-    qDebug() << data.length() << " " << verticesCpt+colorsCpt;
+    for (int i = 0; i < normalCpt; i++){
+        data.append(normals[i]);
+    }
+    qDebug() << data.length() << " " << verticesCpt+colorsCpt+normalCpt;
 }
 
 
@@ -177,8 +222,11 @@ void Maillon::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs
         GL_FLOAT, 0 * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
     program->setAttributeBuffer("colAttr",
         GL_FLOAT, verticesCpt * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
+    program->setAttributeBuffer("norAttr",
+        GL_FLOAT, (verticesCpt+colorsCpt) * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
     program->enableAttributeArray("posAttr");
     program->enableAttributeArray("colAttr");
+    program->enableAttributeArray("norAttr");
 
     // Pour des questions de portabilité, hors de la classe GLArea, tous les appels
     // aux fonctions glBidule doivent être préfixés par glFuncs->.
@@ -188,6 +236,7 @@ void Maillon::drawBlock(QOpenGLShaderProgram *program, QOpenGLFunctions *glFuncs
 
     program->disableAttributeArray("posAttr");
     program->disableAttributeArray("colAttr");
+    program->disableAttributeArray("norAttr");
 
     m_vbo.release();
 }

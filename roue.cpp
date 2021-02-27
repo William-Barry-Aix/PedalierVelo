@@ -103,6 +103,7 @@ void Roue::initPoints(){
     addVertice(Cp);
     addVertice(Bp);
     normal = getNormal();
+    normal = -normal;
     for (int i = 0; i < 4; i++){
         addNormal(normal);
     }
@@ -112,6 +113,7 @@ void Roue::initPoints(){
     addVertice(Dp);
     addVertice(Cp);
     normal = getNormal();
+    normal = -normal;
     for (int i = 0; i < 4; i++){
         addNormal(normal);
     }
@@ -121,6 +123,7 @@ void Roue::initPoints(){
     addVertice(Ep);
     addVertice(Dp);
     normal = getNormal();
+    normal = -normal;
     for (int i = 0; i < 4; i++){
         addNormal(normal);
     }
@@ -130,6 +133,7 @@ void Roue::initPoints(){
     addVertice(Fp);
     addVertice(Ep);
     normal = getNormal();
+    normal = -normal;
     for (int i = 0; i < 4; i++){
         addNormal(normal);
     }
