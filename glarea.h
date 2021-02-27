@@ -110,9 +110,9 @@ private:
 
 
 public:
-    QVector3D posHautGenMaillLine = QVector3D(2.8, 10, 0);   // points obtenue par le calcul, puis arrondi
+    QVector3D posHautGenMaillLine = QVector3D(2.5, 10, 0);   // points obtenue par le calcul, puis arrondi
     QVector3D posHautDestMaillLine = QVector3D(22, 5, 0);    // points obtenue par le calcul, puis arrondi
-    QVector3D posBasGenMaillLine = QVector3D(4, -10, 0);   // points obtenue par le calcul, puis arrondi
+    QVector3D posBasGenMaillLine = QVector3D(2.5, -10, 0);   // points obtenue par le calcul, puis arrondi
     QVector3D posBasDestMaillLine = QVector3D(22, -5, 0);    // points obtenue par le calcul, puis arrondi
 
     QVector3D posHautGenMaillLine2 = QVector3D(1.4, 5, 0);   // points obtenue par le calcul, puis arrondi

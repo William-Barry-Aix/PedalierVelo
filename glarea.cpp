@@ -309,48 +309,48 @@ void GLArea::setTransforms(QMatrix4x4 &cam_mat, QMatrix4x4 &shape_mat)
 
 void GLArea::makeGLObjects()
 {
-    roue1 = new Roue(0.1, 1, 20, -1, 255, 255, 255);
-    roue2 = new Roue(0.1, 0.5, 10, 2, 255, 255, 255);
+    roue1 = new Roue(0.1, 1, 20, -1, 144, 144, 144);
+    roue2 = new Roue(0.1, 0.5, 10, 2, 144, 144, 144);
 
     //cylindre
     for ( int i = 0; i < list1Size; i++ ) {
-        Cylindre *cyl = new Cylindre(1, 1, 30, 255, 0, 0);
+        Cylindre *cyl = new Cylindre(1, 1, 30, 50, 50, 50);
         cylPosList1.append(*cyl);
     }
 
     for ( int i = 0; i < list2Size; i++ ) {
-        Cylindre *cyl = new Cylindre(1, 1, 30, 255, 255, 0);
+        Cylindre *cyl = new Cylindre(1, 1, 30, 50, 50, 50);
         cylPosList2.append(*cyl);
     }
 
     for ( int i = 0; i < list3Size; i++ ) {
-        Cylindre *cyl = new Cylindre(1, 1, 30, 255, 0, 255);
+        Cylindre *cyl = new Cylindre(1, 1, 30, 50, 50, 50);
         cylPosList3.append(*cyl);
     }
 
     for ( int i = 0; i < list4Size; i++ ) {
-        Cylindre *cyl = new Cylindre(1, 1, 30, 0, 0, 255);
+        Cylindre *cyl = new Cylindre(1, 1, 30, 50, 50, 50);
         cylPosList4.append(*cyl);
     }
 
     //maillon
     for ( int i = 0; i < maillList1Size; i++ ) {
-        Maillon *maillon = new Maillon(1, 2, 1, 0.1, 0, 0, 255, 0);
+        Maillon *maillon = new Maillon(1, 2, 1, 0.1, 0, 200, 200, 200);
         maillPosList1.append(*maillon);
     }
 
     for ( int i = 0; i < maillList2Size; i++ ) {
-        Maillon *maillon = new Maillon(1, 2, 1, 0.1, 0, 0, 255, 0);
+        Maillon *maillon = new Maillon(1, 2, 1, 0.1, 0, 200, 200, 200);
         maillPosList2.append(*maillon);
     }
 
     for ( int i = 0; i < maillList3Size; i++ ) {
-        Maillon *maillon = new Maillon(1, 2, 1, 0.1, 0, 0, 255, 0);
+        Maillon *maillon = new Maillon(1, 2, 1, 0.1, 0, 200, 200, 200);
         maillPosList3.append(*maillon);
     }
 
     for ( int i = 0; i < maillList4Size; i++ ) {
-        Maillon *maillon = new Maillon(1, 2, 1, 0.1, 0, 0, 255, 0);
+        Maillon *maillon = new Maillon(1, 2, 1, 0.1, 0, 200, 200, 200);
         maillPosList4.append(*maillon);
     }
 }
@@ -365,14 +365,14 @@ void GLArea::tearGLObjects()
 // ---- cylindre ----
 void GLArea::moveCylHautline(QMatrix4x4 *matrix, float offset) {
     double x1 = fmod(m_alpha*2 + offset/list1Size, 1);
-    double x2 = fmod( abs(1 - x1), 1);
+    double x2 = abs(1 - x1);
     QVector3D newPos = QVector3D(posHautGenMaillLine*x2 + posHautDestMaillLine*x1);
     matrix->translate(newPos);
 }
 
 void GLArea::moveCylBasline(QMatrix4x4 *matrix, float offset) {
     double x1 = fmod(m_alpha*2 + offset/list1Size, 1);
-    double x2 = fmod( abs(1 - x1), 1);
+    double x2 = abs(1 - x1);
     QVector3D newPos = QVector3D(posBasGenMaillLine*x1 + posBasDestMaillLine*x2);
     matrix->translate(newPos);
 }
@@ -390,32 +390,32 @@ void GLArea::moveCylQRightCircle(QMatrix4x4 *matrix, float offset) {
     float offsetAlpha = fmod(m_alpha*2.7 + offset/list4Size, 1);
     float rayon = 5;
     float offsetRayon = -2;
-    float arcCircle = M_PI * 0.8;
+    float arcCircle = M_PI * 0.85;
     QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle + 0.2) + posHautDestMaillLine.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle +0.2),posHautGenMaillLine.z());
     matrix->translate(newPos);
 }
 
 // ---- maillon ----
 void GLArea::moveMaillHautline(QMatrix4x4 *matrix, float offset) {
-    double x1 = fmod(m_alpha + offset/maillList1Size, 1);
-    double x2 = fmod( abs(1 - x1), 1);
+    double x1 = fmod(m_alpha*2 + offset/maillList1Size, 1);
+    double x2 = abs(1 - x1);
     QVector3D newPos = QVector3D(posHautGenMaillLine2*x2 + posHautDestMaillLine2*x1);
     matrix->translate(newPos);
     matrix->rotate(-13, 0, 0, 1);
 }
 
 void GLArea::moveMaillBasline(QMatrix4x4 *matrix, float offset) {
-    double x1 = fmod(m_alpha + offset/maillList2Size, 1);
-    double x2 = fmod( abs(1 - x1), 1);
+    double x1 = fmod(m_alpha*2 + offset/maillList2Size, 1);
+    double x2 = abs(1 - x1);
     QVector3D newPos = QVector3D(posBasGenMaillLine2*x1 + posBasDestMaillLine2*x2);
     matrix->translate(newPos);
-    matrix->rotate(13, 0, 0, 1);
+    matrix->rotate(14, 0, 0, 1);
 }
 
 void GLArea::moveMaillLeftCircle(QMatrix4x4 *matrix, float offset) {
     float offsetAlpha = fmod(m_alpha + offset/list3Size, 1);
     float rayon = -5.25;
-    float offsetRayon = -1.25;
+    float offsetRayon = -1.5;
     float arcCircle = M_PI * 1.2;
     QVector3D newPos = QVector3D(rayon*sin(offsetAlpha*arcCircle - 0.3) + posHautGenMaillLine2.x() + offsetRayon, rayon*cos(offsetAlpha*arcCircle - 0.3),posHautGenMaillLine2.z());
     matrix->translate(newPos);
